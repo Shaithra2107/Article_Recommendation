@@ -1,0 +1,56 @@
+/* login.css */
+
+/* General background for AnchorPane */
+.anchor-pane {
+    -fx-background-color: #ffffff;
+}
+
+/* VBox background and padding */
+.vbox {
+    -fx-padding: 20;
+    -fx-background-color: #0A4969;
+    -fx-background-radius: 10;
+}
+
+/* Label text color */
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 24px;
+}
+
+/* TextField and PasswordField styling */
+.text-field, .password-field {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: #EFF6FF;
+    -fx-border-color: #0A4969;
+    -fx-border-width: 2px;
+}
+
+/* Login button style */
+.button {
+    -fx-background-color: #0A4969;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #000000; /* Black border for all buttons */
+    -fx-border-width: 0.5px;
+    -fx-font-weight: bold;
+    -fx-font-size: 5px;
+}
+
+/* Hyperlink styling */
+.hyperlink {
+    -fx-text-fill: #c0cad6;
+}
+
+/* HBox styling */
+.hbox {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+}
+
+/* Message Label Text */
+.message-label {
+    -fx-text-fill: #111209;
+}
