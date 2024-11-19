@@ -4,9 +4,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="600.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.WelcomeController">
+<AnchorPane prefHeight="550.0" prefWidth="631.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.WelcomeController">
 
-    <VBox alignment="CENTER" prefHeight="510.0" prefWidth="618.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 10;">
+    <VBox alignment="CENTER" layoutX="20.0" layoutY="20.0" prefHeight="510.0" prefWidth="592.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 10;">
 
         <!-- Welcome Label -->
         <Label prefHeight="35.0" prefWidth="628.0" style="-fx-text-fill: #0A4969; -fx-font-size: 24px; -fx-font-weight: bold;" text="                           Welcome to PNRS" />

@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 
+
 public class ManageProfileController {
     @FXML
     public ImageView profileImageView;
@@ -30,10 +31,22 @@ public class ManageProfileController {
     public Button saveButton;
     @FXML
     public Button cancelButton;
+    @FXML
+    public Button changeProfilePictureButton1;
+    @FXML
+    public Button changeProfilePictureButton11;
 
     public void handleSaveChanges(ActionEvent actionEvent) {
     }
 
     public void handleCancel(ActionEvent actionEvent) {
+        
+    }
+
+    public void handleBack(ActionEvent actionEvent) {
+    }
+
+    public void handleChangeProfilePicture(ActionEvent actionEvent) {
+
     }
 }

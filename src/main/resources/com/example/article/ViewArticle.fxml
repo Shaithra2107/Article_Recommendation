@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" spacing="10" style="-fx-padding: 20;">
+    <Label text="Manage Articles" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <!-- Table -->
+    <TableView fx:id="tblArticles" style="-fx-border-color: #d0d0d0;">
+        <columns>
+            <TableColumn text="Title" fx:id="colTitle" prefWidth="150" />
+            <TableColumn text="Category" fx:id="colCategory" prefWidth="100" />
+            <TableColumn text="Tags" fx:id="colTags" prefWidth="150" />
+            <TableColumn text="Last Modified" fx:id="colModified" prefWidth="100" />
+        </columns>
+    </TableView>
+
+    <!-- Action Buttons -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button text="Add Article" fx:id="btnAdd" />
+        <Button text="Edit Selected" fx:id="btnEdit" />
+        <Button text="Delete Selected" fx:id="btnDelete" />
+    </HBox>
+</VBox>

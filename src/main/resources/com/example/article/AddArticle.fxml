@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" spacing="10" style="-fx-padding: 20;">
+    <Label text="Add New Article" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+
+    <GridPane hgap="10" vgap="10" alignment="CENTER">
+        <!-- Article Title -->
+        <Label text="Title:" />
+        <TextField fx:id="txtTitle" promptText="Enter article title here" GridPane.columnIndex="1" />
+
+        <!-- Article Content -->
+        <Label text="Content:" GridPane.rowIndex="1" />
+        <TextArea fx:id="txtContent" promptText="Enter article content" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+        <!-- Category Dropdown -->
+        <Label text="Category:" GridPane.rowIndex="2" />
+        <ComboBox fx:id="cmbCategory" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Select a category" />
+
+        <!-- Tags -->
+        <Label text="Tags:" GridPane.rowIndex="3" />
+        <TextField fx:id="txtTags" promptText="Enter tags (comma-separated)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    </GridPane>
+
+    <!-- Buttons -->
+    <HBox alignment="CENTER" spacing="10">
+        <Button text="Save" fx:id="btnSave" />
+        <Button text="Cancel" fx:id="btnCancel" />
+    </HBox>
+</VBox>

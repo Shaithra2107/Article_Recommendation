@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f0f4f8;" xmlns="http://javafx.com/javafx/17.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.DashboardController">
+
+    <!-- Main Container -->
+    <VBox alignment="TOP_CENTER" spacing="10.0" style="-fx-padding: 15;" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">
+
+        <!-- Header Section -->
+        <HBox alignment="CENTER" spacing="20.0" style="-fx-background-color: #0A4969; -fx-padding: 10;">
+            <Label text="Dashboard" style="-fx-font-size: 24px; -fx-text-fill: #ffffff;" />
+            <Button fx:id="logoutButton" text="Logout" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px;" onAction="#handleLogout"/>
+        </HBox>
+
+        <!-- Body Section -->
+        <HBox alignment="CENTER" spacing="15.0" style="-fx-padding: 10;">
+            <!-- Left Panel -->
+            <VBox spacing="10.0" prefWidth="200.0">
+                <Button fx:id="viewArticlesButton" text="View Articles" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff;" onAction="#handleViewArticles"/>
+                <Button fx:id="getRecommendationsButton" text="Get Recommendations" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff;" onAction="#handleGetRecommendations"/>
+                <Button fx:id="manageProfileButton" text="Manage Profile" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff;" onAction="#handleManageProfile"/>
+                <Button fx:id="administerArticlesButton" text="Administer Articles" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff;" onAction="#handleAdministerArticles" visible="false"/> <!-- Only for admin users -->
+            </VBox>
+
+            <!-- Right Panel -->
+            <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-padding: 10;" prefWidth="550.0">
+                <!-- Article Section -->
+                <Label fx:id="sectionTitle" text="Articles Section" style="-fx-font-size: 18px; -fx-text-fill: #0A4969;" />
+                <ListView fx:id="articleListView" prefHeight="400.0" prefWidth="500.0" />
+                <HBox alignment="CENTER" spacing="10.0">
+                    <Button fx:id="likeButton" text="Like" style="-fx-background-color: #4caf50; -fx-text-fill: #ffffff;" onAction="#handleLikeArticle"/>
+                    <Button fx:id="dislikeButton" text="Dislike" style="-fx-background-color: #f44336; -fx-text-fill: #ffffff;" onAction="#handleDislikeArticle"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </VBox>
+
+</AnchorPane>
