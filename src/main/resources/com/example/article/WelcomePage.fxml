@@ -17,13 +17,13 @@
        </ImageView>
 
         <!-- Instruction Label -->
-        <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Sign up to create a new account or login if you are a returning user." />
-
-        <!-- Sign Up Button -->
-        <Button fx:id="signUpButton" onAction="#handleSignUp" prefWidth="200.0" style="-fx-background-color: #0A4969; -fx-text-fill: white; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff;" text="Sign Up" />
+        <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" />
 
         <!-- Login Button -->
-        <Button fx:id="loginButton" onAction="#handleLogin" prefWidth="200.0" style="-fx-background-color: #0A4969; -fx-text-fill: white; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff;" text="Login" />
+        <Button fx:id="AdminButton" onAction="#handleAdmin" prefHeight="28.0" prefWidth="139.0" style="-fx-background-color: #0A4969; -fx-text-fill: white; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff;" text="Admin" />
+
+        <!-- Sign Up Button -->
+        <Button fx:id="UserButton" onAction="#handleUser" prefHeight="28.0" prefWidth="138.0" style="-fx-background-color: #0A4969; -fx-text-fill: white; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff;" text="User" />
 
     </VBox>
 

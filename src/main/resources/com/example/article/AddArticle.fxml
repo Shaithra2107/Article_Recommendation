@@ -1,31 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" spacing="10" style="-fx-padding: 20;">
-    <Label text="Add New Article" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
 
-    <GridPane hgap="10" vgap="10" alignment="CENTER">
-        <!-- Article Title -->
-        <Label text="Title:" />
-        <TextField fx:id="txtTitle" promptText="Enter article title here" GridPane.columnIndex="1" />
+<VBox alignment="TOP_CENTER" spacing="10" style="-fx-background-color: #0A4969; -fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.ManageArticle">
+    <!-- Title Label -->
+    <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;" text="Add New Article" />
 
-        <!-- Article Content -->
-        <Label text="Content:" GridPane.rowIndex="1" />
-        <TextArea fx:id="txtContent" promptText="Enter article content" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <!-- GridPane for Input Fields -->
+    <GridPane alignment="CENTER" hgap="10" vgap="10">
+        <!-- Article Name -->
+        <Label style="-fx-text-fill: white;" text="Article Title:" GridPane.rowIndex="1" />
+        <TextField fx:id="txtArticleName" promptText="Enter article name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-        <!-- Category Dropdown -->
-        <Label text="Category:" GridPane.rowIndex="2" />
-        <ComboBox fx:id="cmbCategory" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Select a category" />
+        <!-- Article Author -->
+        <Label style="-fx-text-fill: white;" text="Author:" GridPane.rowIndex="2" />
+        <TextField fx:id="txtAuthor" promptText="Enter author name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+        <!-- Article Description -->
+        <Label style="-fx-text-fill: white;" text="Description:" GridPane.rowIndex="4" />
+        <TextArea fx:id="txtDescription" promptText="Enter article description" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
         <!-- Tags -->
-        <Label text="Tags:" GridPane.rowIndex="3" />
-        <TextField fx:id="txtTags" promptText="Enter tags (comma-separated)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Label style="-fx-text-fill: white;" text="Tags:" GridPane.rowIndex="6" />
+        <TextField fx:id="txtTags" promptText="Enter tags (comma-separated)" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+
+        <!-- URL -->
+        <Label style="-fx-text-fill: white;" text="URL:" GridPane.rowIndex="7" />
+        <TextField fx:id="txtURL" promptText="Enter article URL" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+
+      <Label layoutX="10.0" layoutY="24.0" style="-fx-text-fill: white;" text="Article ID:" />
+      <TextField fx:id="txtArticled" layoutX="83.0" layoutY="37.0" promptText="Enter article ID" GridPane.columnIndex="1" />
+
+        <!-- Column and Row Constraints -->
+        <columnConstraints>
+            <ColumnConstraints />
+            <ColumnConstraints />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+        </rowConstraints>
     </GridPane>
 
     <!-- Buttons -->
     <HBox alignment="CENTER" spacing="10">
-        <Button text="Save" fx:id="btnSave" />
-        <Button text="Cancel" fx:id="btnCancel" />
+        <Button fx:id="btnSave" onAction="#handleSave" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-background-radius: 10;" text="Save" />
+        <Button fx:id="btnCancel" onAction="#handleBack" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-background-radius: 10;" text="Back" />
     </HBox>
 </VBox>

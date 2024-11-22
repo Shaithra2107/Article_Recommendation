@@ -1,10 +1,22 @@
 package com.example.article;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.bson.Document;
+
+import java.io.IOException;
 
 public class SignUp {
 
@@ -30,52 +42,103 @@ public class SignUp {
     private RadioButton otherRadioButton;
     @FXML
     private Label messageLabel;
+    private ToggleGroup genderField;
 
-    private final MongoCollection<Document> userCollection;
-
-    public SignUp() {
-        MongoDatabase database = MongoDBUtil.getDatabase();
-        userCollection = database.getCollection("Users");
+    @FXML
+    public void initialize() {
+        genderField = new ToggleGroup();
+        maleRadioButton.setToggleGroup(genderField);
+        femaleRadioButton.setToggleGroup(genderField);
+        otherRadioButton.setToggleGroup(genderField);
     }
 
     @FXML
     private void handleSignUp() {
-        String fullName = fullNameField.getText();
-        String email = emailField.getText();
-        String username = usernameField.getText();
-        String password = passwordField.getText();
-        String confirmPassword = confirmPasswordField.getText();
-        String dob = (dobField.getValue() != null) ? dobField.getValue().toString() : "";
-        String phone = phoneField.getText();
-        String gender = maleRadioButton.isSelected() ? "Male" :
-                femaleRadioButton.isSelected() ? "Female" : "Other";
+        try {
+            // Set up MongoDB connection
+            ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(connectionString)
+                    .build();
+            MongoClient mongoClient = MongoClients.create(settings);
 
-        if (!password.equals(confirmPassword)) {
-            messageLabel.setText("Passwords do not match!");
-            return;
+            // Access database and collection
+            MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
+            MongoCollection<Document> collection = database.getCollection("Users");
+
+            String selectedGender = genderField.getSelectedToggle() == maleRadioButton ? "Male"
+                    : genderField.getSelectedToggle() == femaleRadioButton ? "Female" : "Other";
+
+            // Prepare user data
+            Document user = new Document("fullName", fullNameField.getText())
+                    .append("email", emailField.getText())
+                    .append("username", usernameField.getText())
+                    .append("password", passwordField.getText()) // Encrypt passwords in production!
+                    .append("dateOfBirth", dobField.getValue().toString())
+                    .append("gender", selectedGender)
+                    .append("phoneNumber", phoneField.getText());
+
+            // Insert into MongoDB
+            collection.insertOne(user);
+
+            showAlert("Account created successfully!", Alert.AlertType.INFORMATION);
+            resetForm();// Reset the form
+        } catch (Exception e) {
+            showAlert("Failed to save data to the database.", Alert.AlertType.ERROR);
         }
-
-        Document existingUser = userCollection.find(new Document("username", username)).first();
-        if (existingUser != null) {
-            messageLabel.setText("Username already exists!");
-            return;
-        }
-
-        Document newUser = new Document("fullName", fullName)
-                .append("email", email)
-                .append("username", username)
-                .append("password", password)
-                .append("dob", dob)
-                .append("phone", phone)
-                .append("gender", gender);
-
-        userCollection.insertOne(newUser);
-        messageLabel.setText("Account created successfully!");
     }
 
     @FXML
-    private void handleLogin() {
-        // Switch to Login screen (implement scene change logic here)
-        System.out.println("Redirecting to Login screen...");
+    private void handleLogin(ActionEvent actionEvent) {
+        try {
+            // Load the Login FXML file
+            Parent loginRoot = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Scene loginScene = new Scene(loginRoot);
+
+            // Get the current stage (window) and set the new scene
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error loading Login page.", Alert.AlertType.ERROR);
+        }
+    }
+
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
+        try {
+            // Load the Welcome Page FXML file
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("WelcomePage.fxml"));
+            Scene welcomeScene = new Scene(welcomeRoot);
+
+            // Get the current stage (window) and set the new scene
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(welcomeScene);
+            stage.setTitle("Welcome Page");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error loading Welcome Page.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void resetForm() {
+        fullNameField.clear();
+        emailField.clear();
+        usernameField.clear();
+        passwordField.clear();
+        confirmPasswordField.clear();
+        dobField.setValue(null);
+        phoneField.clear();
+        genderField.selectToggle(null);
+    }
+
+    // Method to show alert messages
+    private void showAlert(String message, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(message);
+        alert.show();
     }
 }
