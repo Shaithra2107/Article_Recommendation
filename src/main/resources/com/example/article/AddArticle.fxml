@@ -30,7 +30,7 @@
         <TextField fx:id="txtURL" promptText="Enter article URL" GridPane.columnIndex="1" GridPane.rowIndex="7" />
 
       <Label layoutX="10.0" layoutY="24.0" style="-fx-text-fill: white;" text="Article ID:" />
-      <TextField fx:id="txtArticled" layoutX="83.0" layoutY="37.0" promptText="Enter article ID" GridPane.columnIndex="1" />
+      <TextField fx:id="txtArticleID" layoutX="83.0" layoutY="37.0" promptText="Enter article ID" GridPane.columnIndex="1" />
 
         <!-- Column and Row Constraints -->
         <columnConstraints>

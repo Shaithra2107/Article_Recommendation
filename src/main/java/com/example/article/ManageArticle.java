@@ -25,7 +25,7 @@ public class ManageArticle {
 
     // Add Articles Section
     @FXML
-    public TextField txtArticled;
+    public TextField txtArticleID;
     @FXML
     public TextField txtArticleName;
     @FXML
@@ -39,11 +39,10 @@ public class ManageArticle {
 
     // Edit Articles Section
     @FXML
-    public TextField txtTitle;
-    @FXML
-    public TextField txtArticleid;
+    public TextField txtArticleTitle;
 
     private final MongoCollection<Document> articleCollection;
+
 
 
     public ManageArticle() {
@@ -61,7 +60,7 @@ public class ManageArticle {
 
     public void handleSave(ActionEvent actionEvent) {
         // Retrieve input values
-        String articleId = txtArticled.getText(); // Custom articleId field
+        String articleId = txtArticleID.getText(); // Custom articleId
         String articleName = txtArticleName.getText();
         String author = txtAuthor.getText();
         String description = txtDescription.getText();
@@ -69,21 +68,22 @@ public class ManageArticle {
         String url = txtURL.getText();
 
         // Validate input fields
-        if (articleId.isEmpty() || articleName.isEmpty() || author.isEmpty() || description.isEmpty() || tags.isEmpty() || url.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Error", "All fields are required!");
+        if (articleName.isEmpty() || author.isEmpty() || description.isEmpty() || tags.isEmpty() || url.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "Error", "All fields except Article ID are required!");
             return;
         }
 
-        // Prepare the article document with a custom articleId
-        Document article = new Document("_id", articleId) // Adding the custom articleId
+        // Prepare the article document
+        Document article = new Document()
+                .append("articleId", articleId) // Optional custom articleId
                 .append("title", articleName)
                 .append("author", author)
                 .append("description", description)
                 .append("tags", tags)
                 .append("url", url);
 
-        // Insert the article into the database
         try {
+            // Insert the article into the database
             articleCollection.insertOne(article);
             showAlert(Alert.AlertType.INFORMATION, "Success", "Article added successfully!");
 
@@ -93,6 +93,7 @@ public class ManageArticle {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to save the article: " + e.getMessage());
         }
     }
+
 
 
     public void handleBack(ActionEvent actionEvent) {
@@ -117,8 +118,8 @@ public class ManageArticle {
 
     public void handleSaveChanges(ActionEvent actionEvent) {
         // Retrieve input values
-        String articleId = txtArticleid.getText();
-        String updatedTitle = txtTitle.getText();
+        String articleId = txtArticleID.getText();
+        String updatedTitle = txtArticleTitle.getText();
         String updatedAuthor = txtAuthor.getText();
         String updatedDescription = txtDescription.getText();
         String updatedTags = txtTags.getText();
@@ -175,7 +176,7 @@ public class ManageArticle {
 
     // Method to fetch details based on Article ID
     public void handleFetchDetails(ActionEvent actionEvent) {
-        String articleId = txtArticleid.getText();
+        String articleId = txtArticleID.getText();
 
         // Validate input
         if (articleId.isEmpty()) {
@@ -185,26 +186,27 @@ public class ManageArticle {
 
         try {
             // Query the database using the provided articleId
-            Document filter = new Document("_id", articleId);
+            Document filter = new Document("articleId", articleId); // Use articleId for filtering
             Document article = articleCollection.find(filter).first();
 
             if (article != null) {
                 // Populate fields with the retrieved article details
-                txtTitle.setText(article.getString("title"));
+                txtArticleTitle.setText(article.getString("title"));
                 txtAuthor.setText(article.getString("author"));
                 txtDescription.setText(article.getString("description"));
                 txtTags.setText(article.getString("tags"));
                 txtURL.setText(article.getString("url"));
             } else {
-                // Show a warning if no article is found
-                showAlert(Alert.AlertType.WARNING, "Not Found", "No article found with the given ID.");
+                showAlert(Alert.AlertType.WARNING, "Not Found", "No article found with the given Article ID.");
             }
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to fetch the article: " + e.getMessage());
         }
     }
 
+
     private void clearFields() {
+        txtArticleID.clear();
         txtArticleName.clear();
         txtAuthor.clear();
         txtDescription.clear();
