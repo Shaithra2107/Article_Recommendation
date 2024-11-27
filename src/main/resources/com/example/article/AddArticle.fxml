@@ -14,8 +14,8 @@
         <TextField fx:id="txtArticleName" promptText="Enter article name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <!-- Article Author -->
-        <Label style="-fx-text-fill: white;" text="Author:" GridPane.rowIndex="2" />
-        <TextField fx:id="txtAuthor" promptText="Enter author name" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label style="-fx-text-fill: white;" text="Date" GridPane.rowIndex="2" />
+        <TextField fx:id="txtDate" promptText="Enter the date" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
         <!-- Article Description -->
         <Label style="-fx-text-fill: white;" text="Description:" GridPane.rowIndex="4" />

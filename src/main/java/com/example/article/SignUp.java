@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import org.bson.Document;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SignUp {
 
@@ -52,8 +53,25 @@ public class SignUp {
         otherRadioButton.setToggleGroup(genderField);
     }
 
+
     @FXML
     private void handleSignUp() {
+        // Validate inputs
+        if (fullNameField.getText().isEmpty() || emailField.getText().isEmpty() || usernameField.getText().isEmpty()
+                || passwordField.getText().isEmpty() || confirmPasswordField.getText().isEmpty()
+                || dobField.getValue() == null || genderField.getSelectedToggle() == null) {
+            showAlert("Please fill in all fields.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+            showAlert("Passwords do not match.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        String selectedGender = genderField.getSelectedToggle() == maleRadioButton ? "Male"
+                : genderField.getSelectedToggle() == femaleRadioButton ? "Female" : "Other";
+
         try {
             // Set up MongoDB connection
             ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
@@ -62,18 +80,29 @@ public class SignUp {
                     .build();
             MongoClient mongoClient = MongoClients.create(settings);
 
-            // Access database and collection
             MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
             MongoCollection<Document> collection = database.getCollection("Users");
 
-            String selectedGender = genderField.getSelectedToggle() == maleRadioButton ? "Male"
-                    : genderField.getSelectedToggle() == femaleRadioButton ? "Female" : "Other";
+            // Check for duplicate username or email
+            Document duplicateCheck = collection.find(new Document("$or", List.of(
+                    new Document("username", usernameField.getText()),
+                    new Document("email", emailField.getText())
+            ))).first();
+
+            if (duplicateCheck != null) {
+                if (duplicateCheck.getString("username").equals(usernameField.getText())) {
+                    showAlert("This username is already taken. Please choose another.", Alert.AlertType.WARNING);
+                } else {
+                    showAlert("This email is already registered. Please use another.", Alert.AlertType.WARNING);
+                }
+                return;
+            }
 
             // Prepare user data
             Document user = new Document("fullName", fullNameField.getText())
                     .append("email", emailField.getText())
                     .append("username", usernameField.getText())
-                    .append("password", passwordField.getText()) // Encrypt passwords in production!
+                    .append("password", passwordField.getText()) // TODO: Hash passwords in production!
                     .append("dateOfBirth", dobField.getValue().toString())
                     .append("gender", selectedGender)
                     .append("phoneNumber", phoneField.getText());
@@ -82,11 +111,13 @@ public class SignUp {
             collection.insertOne(user);
 
             showAlert("Account created successfully!", Alert.AlertType.INFORMATION);
-            resetForm();// Reset the form
+            resetForm();
         } catch (Exception e) {
-            showAlert("Failed to save data to the database.", Alert.AlertType.ERROR);
+            e.printStackTrace();
+            showAlert("Failed to save data to the database. Error: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
 
     @FXML
     private void handleLogin(ActionEvent actionEvent) {

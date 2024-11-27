@@ -58,6 +58,10 @@ public class LoginController {
         Document user = userCollection.find(new Document("username", username)).first();
 
         if (user != null && user.getString("password").equals(password)) {
+            // Set the logged-in user ID
+            String userId = user.getObjectId("_id").toString(); // Assuming MongoDB ID is used
+            User.setLoggedInUserId(userId);
+
             messageLabel.setText("Login successful!");
             redirectToDashboard(); // Redirect to the dashboard
         } else {
