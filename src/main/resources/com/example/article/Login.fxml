@@ -5,34 +5,40 @@
 
 <AnchorPane prefHeight="505.0" prefWidth="570.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.LoginController">
 
-    <VBox alignment="CENTER" layoutX="37.0" layoutY="25.0" prefHeight="462.0" prefWidth="500.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 10;">
+    <VBox alignment="CENTER" layoutX="35.0" layoutY="20.0" prefHeight="465.0" prefWidth="500.0" spacing="20" style="-fx-padding: 30; -fx-background-color: #ffffff; -fx-background-radius: 15;">
 
         <!-- Welcome Label -->
-        <Label style="-fx-text-fill: #0A4969; -fx-font-size: 24px;" text="Login" />
+        <Label style="-fx-text-fill: #0A4969; -fx-font-size: 28px; -fx-font-weight: bold;" text="Welcome Back!" />
+        <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Please login to continue." />
 
-        <!-- Username Label and TextField -->
-        <HBox alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="487.0" spacing="10">
-            <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Username" />
-        </HBox>
-        <TextField fx:id="usernameField" prefHeight="29.0" prefWidth="434.0" promptText="Username" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
+        <!-- Username Field -->
+        <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="434.0">
+            <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px; -fx-font-weight: bold;" text="Username" />
+            <TextField fx:id="usernameField" prefHeight="35.0" prefWidth="434.0" promptText="Enter your username"
+                       style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #E8F0F8; -fx-border-color: #0A4969; -fx-border-width: 2px; -fx-text-fill: #0A4969;" />
+        </VBox>
 
-        <!-- Password Label and PasswordField -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Password" />
-        </HBox>
-        <PasswordField fx:id="passwordField" prefHeight="29.0" prefWidth="443.0" promptText="Password" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
+        <!-- Password Field -->
+        <VBox alignment="CENTER_LEFT" spacing="5" prefWidth="434.0">
+            <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px; -fx-font-weight: bold;" text="Password" />
+            <PasswordField fx:id="passwordField" prefHeight="35.0" prefWidth="434.0" promptText="Enter your password"
+                           style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #E8F0F8; -fx-border-color: #0A4969; -fx-border-width: 2px; -fx-text-fill: #0A4969;" />
+        </VBox>
 
         <!-- Login Button -->
-        <Button onAction="#handleLogin" prefHeight="29.0" prefWidth="79.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff; -fx-border-width: 2px;" text="Login" />
+        <Button onAction="#handleLogin" prefHeight="40.0" prefWidth="150.0" text="Login"
+                style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 20; -fx-border-radius: 20;" />
 
         <!-- Message Label -->
-        <Label fx:id="messageLabel" textFill="#0A4969" />
+        <Label fx:id="messageLabel" style="-fx-text-fill: #E63946; -fx-font-size: 14px;" text="" />
 
         <!-- Sign Up Section -->
-        <HBox alignment="CENTER" spacing="10">
-            <Label style="-fx-text-fill: #0A4969;" text="Don't have an account?" />
-         <Button onAction="#handleSignUp" prefHeight="29.0" prefWidth="69.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff; -fx-border-width: 2px;" text="Sign up" />
-         <Button layoutX="273.0" layoutY="10.0" onAction="#handleBack" prefHeight="29.0" prefWidth="70.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff; -fx-border-width: 2px;" text="Back" />
+        <HBox alignment="CENTER" spacing="5">
+            <Label style="-fx-text-fill: #0A4969; -fx-font-size: 14px;" text="Don't have an account?" />
+            <Button onAction="#handleSignUp" text="Sign up"
+                    style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 15; -fx-border-radius: 15;" />
+            <Button onAction="#handleBack" text="Back"
+                    style="-fx-background-color: transparent; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-font-weight: bold; -fx-underline: true;" />
         </HBox>
     </VBox>
 

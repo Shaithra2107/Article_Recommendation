@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -122,6 +123,19 @@ public class DashboardController {
     }
 
     public void handleManageProfile(ActionEvent actionEvent) {
+        try {
+            // Load the Welcome Page FXML file
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("ManageProfile.fxml"));
+            Scene welcomeScene = new Scene(welcomeRoot);
+
+            // Get the current stage (window) and set the new scene
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(welcomeScene);
+            stage.setTitle("Welcome Page");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -136,7 +150,7 @@ public class DashboardController {
 
             // Pass the user ID to the recommendations controller
             ViewRecommendedArticles controller = loader.getController();
-            controller.initializeRecommendations(userId); // This method will fetch and display recommendations
+            controller.loadRecommendedArticlesConcurrently(); // This method now handles the recommendation loading
 
             // Switch to the recommendations scene
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -150,6 +164,61 @@ public class DashboardController {
 
 
 
+
     public void handleLogout(ActionEvent actionEvent) {
+        try {
+            // Get the logged-in user's ID
+            String userId = User.getLoggedInUserId();
+
+            // Ensure the user ID is valid before proceeding
+            if (userId == null || userId.isEmpty()) {
+                showAlert("No user is logged in.", Alert.AlertType.WARNING);
+                return;
+            }
+
+            // Access the Users collection
+            MongoCollection<Document> userCollection = database.getCollection("Users");
+
+            // Delete the user's record from the database
+            userCollection.deleteOne(new Document("_id", new org.bson.types.ObjectId(userId)));
+
+            // Clear the logged-in user state in the application
+            User.setLoggedInUserId(null);
+
+            // Redirect to the login page
+            Parent loginRoot = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Scene loginScene = new Scene(loginRoot);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(loginScene);
+            stage.setTitle("Login");
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("An error occurred during logout. Please try again.", Alert.AlertType.ERROR);
+        }
+    }
+
+    private void showAlert(String message, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setContentText(message);
+        alert.show();
+    }
+
+
+    public void handleBack(ActionEvent actionEvent) {
+        try {
+            // Load the Welcome Page FXML file
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Scene welcomeScene = new Scene(welcomeRoot);
+
+            // Get the current stage (window) and set the new scene
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(welcomeScene);
+            stage.setTitle("Welcome Page");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error loading Welcome Page.", Alert.AlertType.ERROR);
+        }
     }
 }

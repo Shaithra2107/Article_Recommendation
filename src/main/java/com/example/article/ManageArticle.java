@@ -6,6 +6,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -82,36 +83,53 @@ public class ManageArticle {
             return;
         }
 
-        // Prepare article document
-        Document article = new Document()
-                .append("articleID", articleId)
-                .append("title", articleName)
-                .append("date", date)
-                .append("keywords", tags)  // Store tags as keywords
-                .append("link", url)
-                .append("summary", description);
+        // Check if the article already exists in the database based on articleID
+        Document filter = new Document("articleID", articleId);
+        Document existingArticle = articleCollection.find(filter).first();
 
-        try {
-            // Insert the article into the main "News" collection
-            articleCollection.insertOne(article);
-
-            // Categorize the article using the ArticleCategorizer
-            String category = ArticleCategorizer.categorizeArticle(
-                    List.of(tags.split(",")), articleName, description);  // Split tags into a list
-
-            // Save to the relevant category collection
-            MongoCollection<Document> categoryCollection = database.getCollection(category.replace(" ", "_"));
-            categoryCollection.insertOne(article);  // Save to the category-specific collection
-
-            // Notify the user
-            showAlert(Alert.AlertType.INFORMATION, "Success", "Article added successfully!");
-
-            // Clear input fields after saving
-            clearFields();
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save the article: " + e.getMessage());
+        if (existingArticle != null) {
+            // If an article with the same articleID exists, show an error
+            showAlert(Alert.AlertType.ERROR, "Error", "An article with this ID already exists. Please use a different Article ID.");
+            return;
         }
+
+        // Perform the save operation asynchronously
+        new Thread(() -> {
+            try {
+                // Prepare article document
+                Document article = new Document()
+                        .append("articleID", articleId)
+                        .append("title", articleName)
+                        .append("date", date)
+                        .append("keywords", tags)
+                        .append("link", url)
+                        .append("summary", description);
+
+                // Insert the article into the main "News" collection
+                articleCollection.insertOne(article);
+
+                // Categorize the article using the ArticleCategorizer
+                String category = ArticleCategorizer.categorizeArticle(
+                        List.of(tags.split(",")), articleName, description);  // Split tags into a list
+
+                // Save to the relevant category collection
+                MongoCollection<Document> categoryCollection = database.getCollection(category.replace(" ", "_"));
+                categoryCollection.insertOne(article);  // Save to the category-specific collection
+
+                // Update the UI in the JavaFX thread
+                Platform.runLater(() -> {
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Article added successfully!");
+                    clearFields();
+                });
+
+            } catch (Exception e) {
+                // Update the UI in case of an error
+                Platform.runLater(() -> showAlert(Alert.AlertType.ERROR, "Error", "Failed to save the article: " + e.getMessage()));
+            }
+        }).start();  // Start the thread to run the database operations
     }
+
+
 
 
     public void handleBack(ActionEvent actionEvent) {

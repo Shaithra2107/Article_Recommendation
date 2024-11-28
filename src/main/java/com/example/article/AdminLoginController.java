@@ -23,6 +23,8 @@ import java.io.IOException;
 public class AdminLoginController {
 
     @FXML
+    public TextField adminEmailField;
+    @FXML
     private TextField adminIdField;
 
     @FXML
@@ -50,9 +52,17 @@ public class AdminLoginController {
     private void handleAdminLogin(ActionEvent actionEvent) {
         String adminId = adminIdField.getText();
         String adminPassword = adminPasswordField.getText();
+        String adminEmail = adminEmailField.getText();
 
+        // Check for empty fields
         if (adminId.isEmpty() || adminPassword.isEmpty()) {
             adminMessageLabel.setText("Please enter both Admin ID and Password.");
+            return;
+        }
+
+        // Validate adminId as email format
+        if (!isValidEmail(adminEmail)) {
+            adminMessageLabel.setText("Invalid email format. Please enter a valid email.");
             return;
         }
 
@@ -66,6 +76,13 @@ public class AdminLoginController {
             adminMessageLabel.setText("Invalid Admin ID or Password.");
         }
     }
+
+    // Helper method to validate email format
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        return email.matches(emailRegex);
+    }
+
 
     @FXML
     private void handleBack(ActionEvent actionEvent) {

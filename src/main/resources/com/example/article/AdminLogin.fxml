@@ -1,43 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="505.0" prefWidth="570.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.AdminLoginController">
+<AnchorPane prefHeight="530.0" prefWidth="550.0" style="-fx-background-color: linear-gradient(to bottom, #0A4969, #024059);" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.AdminLoginController">
 
-    <VBox alignment="CENTER" layoutX="37.0" layoutY="25.0" prefHeight="462.0" prefWidth="500.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 10;">
+    <VBox alignment="CENTER" layoutX="25.0" layoutY="19.0" prefHeight="470.0" prefWidth="500.0" spacing="20" style="-fx-padding: 30; -fx-background-color: #ffffff; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 4);">
 
         <!-- Welcome Label -->
-        <Label style="-fx-text-fill: #0A4969; -fx-font-size: 24px;" text="Admin Login" />
+        <Label style="-fx-text-fill: #0A4969; -fx-font-size: 28px; -fx-font-weight: bold;" text="Admin Login" />
 
         <!-- Admin ID Label and TextField -->
-        <HBox alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="487.0" spacing="10">
+        <VBox alignment="CENTER_LEFT" spacing="5">
             <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Admin ID" />
-        </HBox>
-        <TextField fx:id="adminIdField" prefHeight="29.0" prefWidth="434.0" promptText="Admin ID" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
+            <TextField fx:id="adminIdField" prefHeight="35.0" prefWidth="440.0" promptText="Enter Admin ID" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #f3f6f9; -fx-border-color: #d3dce6; -fx-border-width: 1.5px; -fx-text-fill: #0A4969;" />
+        </VBox>
 
         <!-- Email Label and TextField -->
-        <HBox alignment="CENTER_LEFT" prefHeight="15.0" prefWidth="487.0" spacing="10">
+        <VBox alignment="CENTER_LEFT" spacing="5">
             <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Email" />
-        </HBox>
-        <TextField fx:id="adminEmailField" prefHeight="29.0" prefWidth="434.0" promptText="Email" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
+            <TextField fx:id="adminEmailField" prefHeight="35.0" prefWidth="440.0" promptText="Enter Email" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #f3f6f9; -fx-border-color: #d3dce6; -fx-border-width: 1.5px; -fx-text-fill: #0A4969;" />
+        </VBox>
 
         <!-- Password Label and PasswordField -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
+        <VBox alignment="CENTER_LEFT" spacing="5">
             <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Password" />
-        </HBox>
-        <PasswordField fx:id="adminPasswordField" prefHeight="29.0" prefWidth="443.0" promptText="Password" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
+            <PasswordField fx:id="adminPasswordField" prefHeight="35.0" prefWidth="440.0" promptText="Enter Password" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #f3f6f9; -fx-border-color: #d3dce6; -fx-border-width: 1.5px; -fx-text-fill: #0A4969;" />
+        </VBox>
 
         <!-- Login Button -->
-        <Button onAction="#handleAdminLogin" prefHeight="29.0" prefWidth="79.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff; -fx-border-width: 2px;" text="Login" />
+        <Button onAction="#handleAdminLogin" prefHeight="35.0" prefWidth="150.0" style="-fx-background-color: #0A4969; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2px; -fx-border-color: #ffffff;" text="Login">
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Button>
 
         <!-- Message Label -->
-        <Label fx:id="adminMessageLabel" prefHeight="17.0" prefWidth="163.0" textFill="#0A4969" />
+        <Label fx:id="adminMessageLabel" prefHeight="20.0" prefWidth="300.0" style="-fx-text-fill: red; -fx-font-size: 14px;" text="" />
 
         <!-- Back Button -->
-        <HBox alignment="CENTER" spacing="10">
-            <Button onAction="#handleBack" prefHeight="29.0" prefWidth="70.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #ffffff; -fx-border-width: 2px;" text="Back" />
+        <HBox alignment="CENTER">
+            <Button onAction="#handleBack" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: transparent; -fx-border-color: #0A4969; -fx-border-width: 2px; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 15; -fx-border-radius: 15;" text="Back">
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Button>
         </HBox>
     </VBox>
-
 </AnchorPane>

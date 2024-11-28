@@ -17,14 +17,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class ViewNews implements Initializable {
 
@@ -46,6 +46,9 @@ public class ViewNews implements Initializable {
     private TableColumn<Article, Void> actionsColumn; // The column containing the "Rate" button
 
     private MongoCollection<Document> newsCollection;
+
+    // ExecutorService for managing threads
+    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,10 +96,58 @@ public class ViewNews implements Initializable {
         if (category != null) {
             System.out.println("Category loaded: " + category);
             categoryLabel.setText(category);
-            setCategoryAndLoadArticles(category);
+            loadArticlesConcurrently(category); // Load articles using concurrency
         } else {
             System.out.println("Category is null!");
         }
+    }
+
+    private void loadArticlesConcurrently(String category) {
+        ObservableList<Article> articles = FXCollections.observableArrayList();
+        try {
+            List<Callable<List<Article>>> tasks = new ArrayList<>();
+
+            // Split tasks per category (or other logic if necessary)
+            tasks.add(() -> fetchArticlesByCategory(category));
+
+            // Execute tasks concurrently
+            List<Future<List<Article>>> results = executorService.invokeAll(tasks);
+
+            // Collect results from all threads
+            for (Future<List<Article>> future : results) {
+                articles.addAll(future.get());
+            }
+
+            // Update TableView with the loaded articles
+            newsTable.setItems(articles);
+
+        } catch (InterruptedException | ExecutionException e) {
+            System.err.println("Error loading articles concurrently: " + e.getMessage());
+        }
+    }
+
+    private List<Article> fetchArticlesByCategory(String category) {
+        List<Article> articles = new ArrayList<>();
+        try {
+            MongoCollection<Document> categoryCollection = getMongoCollection(category.replace(" ", "_"));
+            MongoCursor<Document> cursor = categoryCollection.find().iterator();
+
+            while (cursor.hasNext()) {
+                Document doc = cursor.next();
+                String articleId = doc.getString("articleID");
+                String title = doc.getString("title");
+                String date = doc.getString("date");
+                String description = doc.getString("summary");
+                String url = doc.getString("link");
+
+                if (articleId != null && title != null && date != null) {
+                    articles.add(new Article(articleId, title, date, description, url));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching articles for category " + category + ": " + e.getMessage());
+        }
+        return articles;
     }
 
     public void handleRateArticle(Article article) {
@@ -141,34 +192,6 @@ public class ViewNews implements Initializable {
         }
     }
 
-    private void setCategoryAndLoadArticles(String category) {
-        try {
-            ObservableList<Article> articles = FXCollections.observableArrayList();
-            MongoCollection<Document> categoryCollection = getMongoCollection(category.replace(" ", "_"));
-            MongoCursor<Document> cursor = categoryCollection.find().iterator();
-
-            while (cursor.hasNext()) {
-                Document doc = cursor.next();
-                String articleId = doc.getString("articleID");
-                String title = doc.getString("title");
-                String date = doc.getString("date");
-                String description = doc.getString("summary");
-                String url = doc.getString("link");
-
-                if (articleId == null || title == null || date == null) {
-                    System.out.println("Missing article data: " + doc.toJson());
-                    continue;
-                }
-
-                articles.add(new Article(articleId, title, date, description, url));
-            }
-
-            newsTable.setItems(articles);
-        } catch (Exception e) {
-            System.err.println("Error loading articles: " + e.getMessage());
-        }
-    }
-
     private MongoCollection<Document> getMongoCollection(String collectionName) {
         try {
             MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
@@ -184,7 +207,6 @@ public class ViewNews implements Initializable {
         HostServices hostServices = HelloApplication.getHostServicesInstance();
         hostServices.showDocument(url);
     }
-
 
     // Handle the back button to return to the Admin Dashboard
     public void handleBack(ActionEvent actionEvent) {

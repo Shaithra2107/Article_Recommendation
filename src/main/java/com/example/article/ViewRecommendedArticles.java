@@ -2,6 +2,7 @@ package com.example.article;
 
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +22,7 @@ import org.bson.conversions.Bson;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.*;
 
 public class ViewRecommendedArticles implements Initializable {
 
@@ -42,7 +44,9 @@ public class ViewRecommendedArticles implements Initializable {
     private TableColumn<Article, Void> actionsColumn;
 
     private MongoCollection<Document> ratingsCollection;
-    private MongoCollection<Document> newsCollection;
+
+    // ExecutorService for concurrency
+    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -87,55 +91,65 @@ public class ViewRecommendedArticles implements Initializable {
             }
         });
 
-        // Load recommendations
-        loadRecommendedArticles();
+        // Load recommendations concurrently
+        loadRecommendedArticlesConcurrently();
     }
 
-    private void loadRecommendedArticles() {
+    void loadRecommendedArticlesConcurrently() {
         try {
             String userId = User.getLoggedInUserId();
             ObservableList<Article> recommendations = FXCollections.observableArrayList();
 
-            // Get user ratings
-            ratingsCollection = getMongoCollection("ratings");
-            MongoCursor<Document> userRatings = ratingsCollection.find(Filters.eq("userId", userId)).iterator();
+            // Check if the user is new
+            boolean isNewUser = isNewUser(userId);
 
-            // Categorize ratings
-            Map<String, Integer> highRatedCounts = new HashMap<>();
-            Map<String, Integer> lowRatedCounts = new HashMap<>();
-
-            while (userRatings.hasNext()) {
-                Document ratingDoc = userRatings.next();
-                String articleId = ratingDoc.getString("articleId");
-                int rating = ratingDoc.getInteger("rating", 0);
-
-                // Fetch category from the article
-                String category = getArticleCategory(articleId);
-                if (rating >= 3) {
-                    highRatedCounts.put(category, highRatedCounts.getOrDefault(category, 0) + 1);
-                } else {
-                    lowRatedCounts.put(category, lowRatedCounts.getOrDefault(category, 0) + 1);
-                }
-            }
-
-            // Recommendation logic
-            if (highRatedCounts.isEmpty() && lowRatedCounts.isEmpty()) {
-                // New user: Recommend one article from each category
-                recommendations.addAll(getRandomArticlesFromAllCategories());
-            } else if (!lowRatedCounts.isEmpty() && highRatedCounts.isEmpty()) {
-                // User has only low ratings: Recommend from other categories
-                recommendations.addAll(getArticlesFromCategoriesExcluding(lowRatedCounts.keySet()));
+            // Create tasks for fetching articles
+            List<Callable<List<Article>>> tasks = new ArrayList<>();
+            if (isNewUser) {
+                // Fetch articles for a new user (6 articles from different categories)
+                tasks.add(() -> getArticlesForNewUser());
             } else {
-                // User with mixed or high ratings
-                recommendations.addAll(getArticlesFromPreferredCategories(highRatedCounts));
+                // Fetch articles for returning user (based on ratings and preferences)
+                tasks.add(() -> getArticlesForLowRatedCategories(userId));
+                tasks.add(() -> getArticlesForPreferredCategories(userId));
             }
+
+            // Execute tasks concurrently
+            List<Future<List<Article>>> results = executorService.invokeAll(tasks);
+
+            // Aggregate results and limit to 6 articles per category for new user
+            for (Future<List<Article>> future : results) {
+                recommendations.addAll(future.get());
+            }
+
+            // Remove duplicates if any (just in case)
+            Set<Article> uniqueArticles = new HashSet<>(recommendations);
+            recommendations.setAll(uniqueArticles);
 
             // Set data to the TableView
             recommendedArticlesTable.setItems(recommendations);
 
-        } catch (Exception e) {
+        } catch (InterruptedException | ExecutionException e) {
             System.err.println("Error loading recommendations: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    private List<Article> getArticlesForNewUser() {
+        System.out.println("Fetching articles for a new user...");
+        return getRandomArticlesFromAllCategories();
+    }
+
+    private List<Article> getArticlesForLowRatedCategories(String userId) {
+        System.out.println("Fetching articles excluding low-rated categories for user: " + userId);
+        Map<String, Integer> lowRatedCounts = categorizeUserRatings(userId, false);
+        return getArticlesFromCategoriesExcluding(lowRatedCounts.keySet());
+    }
+
+    private List<Article> getArticlesForPreferredCategories(String userId) {
+        System.out.println("Fetching articles for user's preferred categories: " + userId);
+        Map<String, Integer> highRatedCounts = categorizeUserRatings(userId, true);
+        return getArticlesFromPreferredCategories(highRatedCounts);
     }
 
     private List<Article> getRandomArticlesFromAllCategories() {
@@ -143,12 +157,11 @@ public class ViewRecommendedArticles implements Initializable {
         String[] categories = {"Business_and_Economy", "Geopolitics_and_Regional_Focus", "Health_and_Pandemic", "Technology", "Sports_and_Competition", "Others"};
 
         for (String category : categories) {
-            MongoCollection<Document> collection = getMongoCollection(category.replace(" ", "_"));
-            MongoCursor<Document> cursor = collection.aggregate(Arrays.asList(new Document("$sample", new Document("size", 1)))).iterator();
-
-            while (cursor.hasNext()) {
-                Document doc = cursor.next();
-                articles.add(createArticleFromDocument(doc));
+            MongoCollection<Document> collection = getMongoCollection(category);
+            try (MongoCursor<Document> cursor = collection.aggregate(List.of(new Document("$sample", new Document("size", 1)))).iterator()) {
+                while (cursor.hasNext()) {
+                    articles.add(createArticleFromDocument(cursor.next()));
+                }
             }
         }
         return articles;
@@ -160,12 +173,11 @@ public class ViewRecommendedArticles implements Initializable {
 
         for (String category : categories) {
             if (!excludedCategories.contains(category)) {
-                MongoCollection<Document> collection = getMongoCollection(category.replace(" ", "_"));
-                MongoCursor<Document> cursor = collection.find().limit(10).iterator();
-
-                while (cursor.hasNext()) {
-                    Document doc = cursor.next();
-                    articles.add(createArticleFromDocument(doc));
+                MongoCollection<Document> collection = getMongoCollection(category);
+                try (MongoCursor<Document> cursor = collection.find().limit(6).iterator()) {
+                    while (cursor.hasNext()) {
+                        articles.add(createArticleFromDocument(cursor.next()));
+                    }
                 }
             }
         }
@@ -175,14 +187,12 @@ public class ViewRecommendedArticles implements Initializable {
     private List<Article> getArticlesFromPreferredCategories(Map<String, Integer> preferredCategories) {
         List<Article> articles = new ArrayList<>();
 
-        for (Map.Entry<String, Integer> entry : preferredCategories.entrySet()) {
-            String category = entry.getKey();
-            MongoCollection<Document> collection = getMongoCollection(category.replace(" ", "_"));
-            MongoCursor<Document> cursor = collection.find().limit(10).iterator();
-
-            while (cursor.hasNext()) {
-                Document doc = cursor.next();
-                articles.add(createArticleFromDocument(doc));
+        for (String category : preferredCategories.keySet()) {
+            MongoCollection<Document> collection = getMongoCollection(category);
+            try (MongoCursor<Document> cursor = collection.find().limit(6).iterator()) {
+                while (cursor.hasNext()) {
+                    articles.add(createArticleFromDocument(cursor.next()));
+                }
             }
         }
         return articles;
@@ -199,50 +209,16 @@ public class ViewRecommendedArticles implements Initializable {
     }
 
     private String getArticleCategory(String articleId) {
-        // Search in all categories to find the article
         String[] categories = {"Business_and_Economy", "Geopolitics_and_Regional_Focus", "Health_and_Pandemic", "Technology", "Sports_and_Competition", "Others"};
 
         for (String category : categories) {
-            MongoCollection<Document> collection = getMongoCollection(category.replace(" ", "_"));
+            MongoCollection<Document> collection = getMongoCollection(category);
             Document doc = collection.find(Filters.eq("articleID", articleId)).first();
             if (doc != null) {
                 return category;
             }
         }
-        return null; // No category found
-    }
-
-    public void handleRateArticle(Article article) {
-        int rating = showRatingDialog();
-        if (rating > 0) {
-            updateArticleRatingInDatabase(article.getArticleId(), rating);
-            article.setRating(rating);
-            recommendedArticlesTable.refresh();
-        }
-    }
-
-    private int showRatingDialog() {
-        ChoiceDialog<Integer> dialog = new ChoiceDialog<>(3, 1, 2, 3, 4, 5);
-        dialog.setTitle("Rate the Article");
-        dialog.setHeaderText("Please rate the article:");
-        dialog.setContentText("Choose a rating (1-5):");
-
-        Optional<Integer> result = dialog.showAndWait();
-        return result.orElse(-1);
-    }
-
-    private void updateArticleRatingInDatabase(String articleId, int rating) {
-        Bson filter = Filters.and(Filters.eq("articleId", articleId), Filters.eq("userId", User.getLoggedInUserId()));
-        Document existingRating = ratingsCollection.find(filter).first();
-
-        if (existingRating != null) {
-            ratingsCollection.updateOne(filter, Updates.set("rating", rating));
-        } else {
-            Document newRating = new Document("userId", User.getLoggedInUserId())
-                    .append("articleId", articleId)
-                    .append("rating", rating);
-            ratingsCollection.insertOne(newRating);
-        }
+        return null;
     }
 
     private MongoCollection<Document> getMongoCollection(String collectionName) {
@@ -260,6 +236,79 @@ public class ViewRecommendedArticles implements Initializable {
         HelloApplication.getHostServicesInstance().showDocument(url);
     }
 
+    public void handleRateArticle(Article article) {
+        int rating = showRatingDialog();
+        if (rating > 0 && rating <= 5) {
+            updateArticleRatingInDatabase(article.getArticleId(), rating);
+            article.setRating(rating);  // Update rating in the table model
+            recommendedArticlesTable.refresh(); // Refresh the table view to reflect the new rating
+        } else {
+            showInvalidRatingAlert();
+        }
+    }
+
+    private int showRatingDialog() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Rate Article");
+        dialog.setHeaderText("Enter rating (1 to 5):");
+        dialog.setContentText("Rating:");
+
+        Optional<String> result = dialog.showAndWait();
+        return result.map(rating -> {
+            try {
+                return Integer.parseInt(rating);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }).orElse(-1);
+    }
+
+    private void showInvalidRatingAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Invalid Rating");
+        alert.setHeaderText("Rating must be between 1 and 5.");
+        alert.showAndWait();
+    }
+
+    private void updateArticleRatingInDatabase(String articleId, int rating) {
+        MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
+
+        // Insert the rating into the ratings collection
+        Bson filter = Filters.and(Filters.eq("userId", User.getLoggedInUserId()), Filters.eq("articleId", articleId));
+        Bson update = Updates.set("rating", rating);
+
+        ratingsCollection.updateOne(filter, update, new UpdateOptions().upsert(true));
+    }
+
+    private boolean isNewUser(String userId) {
+        MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
+        Document userRating = ratingsCollection.find(Filters.eq("userId", userId)).first();
+        return userRating == null;  // If no ratings exist for the user, they are new
+    }
+
+    private Map<String, Integer> categorizeUserRatings(String userId, boolean highRated) {
+        MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
+        Map<String, Integer> categoryCounts = new HashMap<>();
+
+        // Query ratings by the user
+        try (MongoCursor<Document> cursor = ratingsCollection.find(Filters.eq("userId", userId)).iterator()) {
+            while (cursor.hasNext()) {
+                Document ratingDoc = cursor.next();
+                String articleId = ratingDoc.getString("articleId");
+                int rating = ratingDoc.getInteger("rating", 0);
+                String category = getArticleCategory(articleId);
+
+                if (category != null) {
+                    if (highRated ? rating >= 4 : rating <= 2) {
+                        categoryCounts.put(category, categoryCounts.getOrDefault(category, 0) + 1);
+                    }
+                }
+            }
+        }
+        return categoryCounts;
+    }
+
+    @FXML
     public void handleBack(ActionEvent actionEvent) {
         try {
             Parent dashboardRoot = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
@@ -271,14 +320,6 @@ public class ViewRecommendedArticles implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void initializeRecommendations(String userId) {
-        // Set the label or other relevant details if necessary
-        categoryLabel.setText("Recommended Articles for User: " + userId);
-
-        // Load recommended articles for the given user
-        loadRecommendedArticles();
     }
 
 }

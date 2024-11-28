@@ -3,19 +3,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="383.0" prefWidth="600.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.AdminDashboard">
-    <!-- Title -->
-    <VBox alignment="TOP_CENTER" layoutX="50.0" layoutY="20.0" prefWidth="500.0" spacing="20">
-        <Label style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" text="Admin Dashboard" />
-
-        <!-- Buttons Section -->
-        <VBox alignment="CENTER" spacing="15" />
-
-        <!-- Optional Placeholder Buttons -->
-        <VBox alignment="CENTER" layoutY="150.0" spacing="15" />
+<AnchorPane prefHeight="383.0" prefWidth="600.0" style="-fx-background-color: linear-gradient(to bottom, #0A4969, #145C8B);" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.AdminDashboard">
+    <!-- Title Section -->
+    <VBox alignment="CENTER" layoutX="50.0" layoutY="20.0" prefWidth="500.0" spacing="20">
+        <Label style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;" text="Admin Dashboard" />
+        <Separator prefWidth="400.0" style="-fx-background-color: white;" />
     </VBox>
-      <Button fx:id="btnDeleteArticle" layoutX="202.0" layoutY="246.0" onAction="#handleDeleteArticle" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-background-radius: 10;" text="Delete Article" />
-      <Button fx:id="btnEditArticle" layoutX="202.0" layoutY="185.0" onAction="#handleEditArticle" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-background-radius: 10;" text="Edit Article" />
-      <Button fx:id="btnAddArticle" layoutX="200.0" layoutY="113.0" onAction="#handleAddArticle" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-background-radius: 10;" text="Add Article" />
-   <Button fx:id="btnDeleteArticle1" layoutX="16.0" layoutY="14.0" onAction="#handleBack" prefHeight="25.0" prefWidth="67.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-background-radius: 10;" text="Back" />
+
+    <!-- Buttons Section -->
+    <VBox alignment="CENTER" layoutX="38.0" layoutY="83.0" prefHeight="258.0" prefWidth="524.0" spacing="20">
+        <Button fx:id="btnAddArticle" onAction="#handleAddArticle" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-background-radius: 20;" text="Add Article" />
+        <Button fx:id="btnEditArticle" onAction="#handleEditArticle" prefHeight="42.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-background-radius: 20;" text="Edit Article" />
+        <HBox alignment="CENTER" layoutX="127.0" layoutY="250.0" spacing="10">
+            <TextField fx:id="txtArticleID" prefWidth="250.0" promptText="Enter Article ID" style="-fx-background-radius: 15; -fx-padding: 5px; -fx-border-color: #ffffff; -fx-border-radius: 15; -fx-text-fill: #0A4969;" />
+            <Button fx:id="btnDeleteArticle" onAction="#handleDeleteArticle" prefWidth="100.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 12px; -fx-background-radius: 15;" text="Delete" />
+        </HBox>
+    </VBox>
+
+    <!-- Back Button -->
+    <Button fx:id="btnBack" layoutX="16.0" layoutY="14.0" onAction="#handleBack" prefHeight="25.0" prefWidth="67.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 12px; -fx-background-radius: 10;" text="Back" />
 </AnchorPane>

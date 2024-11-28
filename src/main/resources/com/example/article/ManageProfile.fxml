@@ -1,81 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="551.0" prefWidth="690.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.ManageProfileController">
+<AnchorPane prefHeight="500.0" prefWidth="601.0" style="-fx-background-color: linear-gradient(to bottom, #0A4969, #07435C);" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.ManageProfileController">
 
-    <VBox alignment="CENTER" layoutY="25.0" prefHeight="579.0" prefWidth="690.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-background-radius: 10;">
-      <HBox prefHeight="100.0" prefWidth="200.0">
-         <children>
-            <Button fx:id="changeProfilePictureButton1" onAction="#handleBack" prefHeight="33.0" prefWidth="107.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10;" text="Back" textAlignment="CENTER" />
-            <Label prefHeight="87.0" prefWidth="524.0" style="-fx-text-fill: #0A4969; -fx-font-size: 28px;" text="                  Manage Profile" textAlignment="CENTER">
-               <font>
-                  <Font size="32.0" />
-               </font>
-            </Label>
-            <Button fx:id="changeProfilePictureButton11" layoutX="563.0" layoutY="10.0" onAction="#handleChangeProfilePicture" prefHeight="39.0" prefWidth="102.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10;" text="Log Out" textAlignment="CENTER" />
-         </children>
-      </HBox>
+    <!-- Main Content Container -->
+    <VBox alignment="CENTER" layoutX="16.0" layoutY="10.0" prefHeight="450.0" prefWidth="569.0" spacing="20" style="-fx-padding: 25; -fx-background-color: #ffffff; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0.5, 0, 5);">
+
+        <!-- Header Section -->
+        <HBox alignment="CENTER" prefHeight="50.0" spacing="20">
+            <Button fx:id="backButton" onAction="#handleBack" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 15; -fx-cursor: hand;" text="Back" />
+            <Label style="-fx-text-fill: #0A4969; -fx-font-size: 28px; -fx-font-weight: bold;" text="Manage Profile" />
+            <Button fx:id="logoutButton" onAction="#handleChangeProfilePicture" prefHeight="35.0" prefWidth="110.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 15; -fx-cursor: hand;" text="Log Out" />
+        </HBox>
 
         <!-- Profile Picture Section -->
-        <HBox alignment="CENTER" prefHeight="85.0" prefWidth="709.0" spacing="10">
-            <ImageView fx:id="profileImageView" fitHeight="96.0" fitWidth="119.0" preserveRatio="true" />
-            <Button fx:id="changeProfilePictureButton" onAction="#handleChangeProfilePicture" prefHeight="25.0" prefWidth="157.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10;" text="Change Picture" />
-        </HBox>
+        <VBox alignment="CENTER" spacing="10">
+            <ImageView fx:id="profileImageView" fitHeight="100.0" fitWidth="100.0" preserveRatio="true" style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0.3, 0, 2);" />
+            <Button fx:id="changeProfilePictureButton" onAction="#handleChangeProfilePicture" prefHeight="30.0" prefWidth="140.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 15; -fx-cursor: hand;" text="Change Picture" />
+        </VBox>
 
-        <!-- Full Name Label and TextField -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label prefHeight="25.0" prefWidth="139.0" style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Full Name" />
-            <TextField fx:id="fullNameField" prefHeight="29.0" prefWidth="434.0" promptText="Full Name" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
-        </HBox>
+        <!-- Input Fields -->
+        <VBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 10;">
+            <!-- Full Name -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Full Name:" />
+                <TextField fx:id="fullNameField" promptText="Enter full name" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F4F9FF; -fx-border-color: #0A4969; -fx-border-width: 1.5px;" />
+            </HBox>
 
-        <!-- Email Label and TextField -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label prefHeight="25.0" prefWidth="142.0" style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Email" />
-            <TextField fx:id="emailField" prefHeight="29.0" prefWidth="434.0" promptText="Email" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
-        </HBox>
+            <!-- Email -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Email:" />
+                <TextField fx:id="emailField" promptText="Enter email address" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F4F9FF; -fx-border-color: #0A4969; -fx-border-width: 1.5px;" />
+            </HBox>
 
-        <!-- Phone Number Label and TextField -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label prefHeight="25.0" prefWidth="142.0" style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Phone Number" />
-            <TextField fx:id="phoneField" prefHeight="29.0" prefWidth="434.0" promptText="Phone Number" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
-        </HBox>
+            <!-- Phone Number -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Phone Number:" />
+                <TextField fx:id="phoneField" promptText="Enter phone number" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F4F9FF; -fx-border-color: #0A4969; -fx-border-width: 1.5px;" />
+            </HBox>
 
-        <!-- Gender Label and RadioButtons -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label prefHeight="25.0" prefWidth="152.0" style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Gender" />
-            <RadioButton fx:id="maleRadioButton" style="-fx-text-fill: #0A4969;" text="Male" />
-            <RadioButton fx:id="femaleRadioButton" style="-fx-text-fill: #0A4969;" text="Female" />
-            <RadioButton fx:id="otherRadioButton" style="-fx-text-fill: #0A4969;" text="Other" />
-        </HBox>
+            <!-- Gender -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Gender:" />
+                <RadioButton fx:id="maleRadioButton" style="-fx-text-fill: #0A4969;" text="Male" />
+                <RadioButton fx:id="femaleRadioButton" style="-fx-text-fill: #0A4969;" text="Female" />
+                <RadioButton fx:id="otherRadioButton" style="-fx-text-fill: #0A4969;" text="Other" />
+            </HBox>
 
-        <!-- Date of Birth Label and DatePicker -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label prefHeight="25.0" prefWidth="153.0" style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Date of Birth" />
-            <DatePicker fx:id="dobField" prefHeight="29.0" prefWidth="434.0" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
-        </HBox>
+            <!-- Date of Birth -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Date of Birth:" />
+                <DatePicker fx:id="dobField" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-border-color: #0A4969; -fx-border-width: 1.5px;" />
+            </HBox>
 
-        <!-- Change Password Section -->
-        <HBox alignment="CENTER_LEFT" spacing="10">
-            <Label prefHeight="25.0" prefWidth="152.0" style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="Change Password" />
-            <PasswordField fx:id="newPasswordField" prefHeight="29.0" prefWidth="434.0" promptText="New Password" style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-background-color: #0A4969; -fx-border-color: #ffffff; -fx-border-width: 2px; -fx-text-fill: #ffffff;" />
-        </HBox>
+            <!-- Password -->
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label style="-fx-text-fill: #0A4969; -fx-font-size: 16px;" text="New Password:" />
+                <PasswordField fx:id="newPasswordField" promptText="Enter new password" style="-fx-background-radius: 15; -fx-border-radius: 15; -fx-background-color: #F4F9FF; -fx-border-color: #0A4969; -fx-border-width: 1.5px;" />
+            </HBox>
+        </VBox>
 
-        <!-- Save and Cancel Buttons -->
+        <!-- Action Buttons -->
         <HBox alignment="CENTER" spacing="20">
-            <Button fx:id="saveButton" onAction="#handleSaveChanges" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10;" text="Save Changes" />
-            <Button fx:id="cancelButton" onAction="#handleCancel" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 10;" text="Cancel" />
+            <Button fx:id="saveButton" onAction="#handleSaveChanges" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #0A4969; -fx-text-fill: #ffffff; -fx-background-radius: 15; -fx-cursor: hand;" text="Save Changes" />
+            <Button fx:id="cancelButton" onAction="#handleCancel" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #A9A9A9; -fx-text-fill: #ffffff; -fx-background-radius: 15; -fx-cursor: hand;" text="Cancel" />
         </HBox>
     </VBox>
-
 </AnchorPane>
