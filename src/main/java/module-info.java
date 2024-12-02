@@ -10,4 +10,6 @@ module com.example.article {
 
     opens com.example.article to javafx.fxml;
     exports com.example.article;
+    exports com.example.article.App;
+
 }

@@ -1,7 +1,10 @@
 package com.example.article;
 
+import com.example.article.App.User;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -25,7 +28,7 @@ import java.io.IOException;
 public class DashboardController {
 
     // MongoDB setup
-    private static final String CONNECTION_STRING = "mongodb://localhost:27017"; // Update this if necessary
+    private static final String CONNECTION_STRING = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Update this if necessary
     private static final String DATABASE_NAME = "News_Recommendation";
     private static final String COLLECTION_NAME = "News";
     @FXML
@@ -57,9 +60,12 @@ public class DashboardController {
 
     // Constructor to initialize MongoDB client and connection
     public DashboardController() {
-        ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
+        ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
+                .build();
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
                 .build();
         mongoClient = MongoClients.create(settings);  // Initialize MongoClient
 

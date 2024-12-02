@@ -1,7 +1,6 @@
 package com.example.article;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
+import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -37,11 +36,17 @@ public class AdminLoginController {
 
     public AdminLoginController() {
         // Initialize MongoDB connection
-        ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
+        String connectionString = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
                 .build();
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
+                .build();
+        // Create a new client and connect to the server
         MongoClient mongoClient = MongoClients.create(settings);
+
 
         // Access the database and Admin collection
         MongoDatabase database = mongoClient.getDatabase("News_Recommendation");

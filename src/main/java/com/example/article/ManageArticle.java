@@ -2,6 +2,8 @@ package com.example.article;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -57,9 +59,12 @@ public class ManageArticle {
 
     public ManageArticle() {
         // Initialize MongoDB connection
-        ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
+        ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
+                .build();
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
                 .build();
         mongoClient = MongoClients.create(settings);  // Initialize MongoClient
 
@@ -164,31 +169,63 @@ public class ManageArticle {
         }
 
         try {
-            // Prepare the updated document
-            Document updatedArticle = new Document("title", updatedTitle)
+            // Re-categorize the article based on the updated content
+            String newCategory = ArticleCategorizer.categorizeArticle(
+                    List.of(updatedTags.split(",")), updatedTitle, updatedDescription);
+
+            Document filter = new Document("articleID", articleId);
+
+            // Fetch the old article to determine the current category
+            Document oldArticle = articleCollection.find(filter).first();
+            if (oldArticle == null) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Article not found!");
+                return;
+            }
+
+            // Prepare the updated article document
+            Document updatedArticle = new Document("articleID", articleId)
+                    .append("title", updatedTitle)
                     .append("date", updatedDate)
                     .append("keywords", updatedTags)
                     .append("link", updatedURL)
                     .append("summary", updatedDescription);
 
-            // Update the document in the database
-            Document filter = new Document("articleID", articleId);
-            Document update = new Document("$set", updatedArticle);
+            // Update the article in the main "News" collection
+            articleCollection.replaceOne(filter, updatedArticle);
 
-            long updatedCount = articleCollection.updateOne(filter, update).getModifiedCount();
+            // Identify the old category
+            String oldCategory = ArticleCategorizer.categorizeArticle(
+                    List.of(oldArticle.getString("keywords").split(",")),
+                    oldArticle.getString("title"),
+                    oldArticle.getString("summary"));
 
-            if (updatedCount > 0) {
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Article updated successfully!");
-                clearField();
+            if (!oldCategory.equals(newCategory)) {
+                // If the category has changed, move the article to the new category
+
+                // Remove from the old category collection
+                MongoCollection<Document> oldCategoryCollection = database.getCollection(oldCategory.replace(" ", "_"));
+                oldCategoryCollection.deleteOne(filter);
+
+                // Add to the new category collection
+                MongoCollection<Document> newCategoryCollection = database.getCollection(newCategory.replace(" ", "_"));
+                newCategoryCollection.insertOne(updatedArticle);
+
+                System.out.println("Article moved from " + oldCategory + " to " + newCategory);
             } else {
-                showAlert(Alert.AlertType.WARNING, "Warning", "No article found with the given Article ID!");
+                // If the category has not changed, update it in the same category collection
+                MongoCollection<Document> categoryCollection = database.getCollection(oldCategory.replace(" ", "_"));
+                categoryCollection.replaceOne(filter, updatedArticle);
+                System.out.println("Article updated in the same category: " + oldCategory);
             }
-        } catch (IllegalArgumentException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Invalid Article ID: " + e.getMessage());
+
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Article updated successfully!");
+            clearField();
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to update the article: " + e.getMessage());
         }
     }
+
+
 
     private void clearFields() {
         txtArticleID.clear();

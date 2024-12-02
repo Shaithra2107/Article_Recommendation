@@ -1,7 +1,6 @@
 package com.example.article;
 
-import com.mongodb.ConnectionString;
-import com.mongodb.MongoClientSettings;
+import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -32,20 +31,29 @@ public class AdminDashboard {
     public AdminDashboard() {
         // Initialize MongoDB connection
         // MongoDB setup (similar to how it's done in ManageArticle class)
-        ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
+        // Initialize MongoDB connection
+        String connectionString = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
                 .build();
-        mongoClient = MongoClients.create(settings);
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
+                .build();
+        // Create a new client and connect to the server
+        MongoClient mongoClient = MongoClients.create(settings);
 
-        // Access the database and collection
-        database = mongoClient.getDatabase("News_Recommendation");
-        articleCollection = database.getCollection("News");
+
+        // Access the database and Admin collection
+        MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
+        articleCollection = database.getCollection("News");  // Get the collection
+
+
     }
 
     // Method to handle article deletion
     public void handleDeleteArticle(ActionEvent actionEvent) {
-        String articleId = txtArticleID.getText();  // Get article ID from the TextField
+        String articleId = txtArticleID.getText(); // Get article ID from the TextField
 
         // Validate input (make sure articleID is not empty)
         if (articleId.isEmpty()) {
@@ -54,19 +62,30 @@ public class AdminDashboard {
         }
 
         try {
-            // Search for the article by its ID
+            // Delete from the main 'News' collection
             Document filter = new Document("articleID", articleId);
             Document article = articleCollection.find(filter).first();
 
             if (article != null) {
-                // Article found, proceed with deletion
-                articleCollection.deleteOne(filter);  // Delete the article from the collection
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Article deleted successfully!");
+                // Article found, delete it from the 'News' collection
+                articleCollection.deleteOne(filter);
+
+                // Fetch all category collections
+                for (String category : database.listCollectionNames()) {
+                    if (!category.equals("News")) { // Skip the main 'News' collection
+                        MongoCollection<Document> categoryCollection = database.getCollection(category);
+
+                        // Delete the article from the category collection if it exists
+                        categoryCollection.deleteOne(filter);
+                    }
+                }
+
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Article deleted successfully from all collections!");
 
                 // Optionally, clear the text field after deletion
                 txtArticleID.clear();
             } else {
-                // Article not found
+                // Article not found in the 'News' collection
                 showAlert(Alert.AlertType.WARNING, "Not Found", "No article found with the given Article ID.");
             }
         } catch (Exception e) {
@@ -74,6 +93,7 @@ public class AdminDashboard {
             showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete the article: " + e.getMessage());
         }
     }
+
 
     // Method to show alerts to the user
     private void showAlert(Alert.AlertType alertType, String title, String message) {

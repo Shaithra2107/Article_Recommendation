@@ -1,7 +1,10 @@
 package com.example.article;
 
+import com.example.article.App.User;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -58,8 +61,11 @@ public class ManageProfileController {
         userId = new ObjectId(User.getLoggedInUserId());
 
         // Set up MongoDB connection
-        ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
+        ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
         MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(connectionString).build();
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
         mongoClient = MongoClients.create(settings);
         database = mongoClient.getDatabase("News_Recommendation");
         userCollection = database.getCollection("Users");

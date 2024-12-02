@@ -1,5 +1,9 @@
 package com.example.article;
 
+import com.example.article.App.Article;
+import com.example.article.App.User;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
@@ -42,6 +46,8 @@ public class ViewNews implements Initializable {
     public TableColumn<Article, String> descriptionColumn;
     @FXML
     public TableColumn<Article, String> urlColumn;
+    @FXML
+    private TableColumn<Article, Integer> ratingsColumn;  // Integer column for ratings
     @FXML
     private TableColumn<Article, Void> actionsColumn; // The column containing the "Rate" button
 
@@ -92,6 +98,32 @@ public class ViewNews implements Initializable {
             }
         });
 
+        // Updated to handle Integer rating correctly
+        ratingsColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));  // Bind to Article rating
+        ratingsColumn.setCellFactory(col -> new TableCell<Article, Integer>() {
+            private final ComboBox<Integer> comboBox = new ComboBox<>(FXCollections.observableArrayList(1, 2, 3, 4, 5));
+
+            {
+                comboBox.setOnAction(event -> {
+                    Article article = getTableView().getItems().get(getIndex());
+                    int newRating = comboBox.getValue();
+                    article.setRating(newRating); // Update model
+                    updateArticleRatingInDatabase(article.getArticleId(), newRating); // Save to database
+                });
+            }
+
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    comboBox.setValue(item); // Set the ComboBox value to the current rating
+                    setGraphic(comboBox);
+                }
+            }
+        });
+
         String category = DashboardController.getCategory();
         if (category != null) {
             System.out.println("Category loaded: " + category);
@@ -126,7 +158,8 @@ public class ViewNews implements Initializable {
         }
     }
 
-    private List<Article> fetchArticlesByCategory(String category) {
+    // Main method where you fetch articles by category
+    public List<Article> fetchArticlesByCategory(String category) {
         List<Article> articles = new ArrayList<>();
         try {
             MongoCollection<Document> categoryCollection = getMongoCollection(category.replace(" ", "_"));
@@ -140,14 +173,36 @@ public class ViewNews implements Initializable {
                 String description = doc.getString("summary");
                 String url = doc.getString("link");
 
+                // Get the rating from the ratings collection for the current article and user
+                int rating = getRatingForArticle(articleId);
+
                 if (articleId != null && title != null && date != null) {
-                    articles.add(new Article(articleId, title, date, description, url));
+                    articles.add(new Article(articleId, title, date, description, url, rating)); // Pass the rating to the Article constructor
                 }
             }
         } catch (Exception e) {
             System.err.println("Error fetching articles for category " + category + ": " + e.getMessage());
         }
         return articles;
+    }
+
+    // Method to fetch the rating for an article based on the logged-in user and articleId
+    private int getRatingForArticle(String articleId) {
+        int rating = 0;  // Default to 0, indicating no rating.
+
+        try {
+            MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
+            Bson filter = Filters.and(Filters.eq("articleId", articleId), Filters.eq("userId", User.getLoggedInUserId()));
+            Document userRatingDoc = ratingsCollection.find(filter).first();
+
+            if (userRatingDoc != null) {
+                rating = userRatingDoc.getInteger("rating", 0);  // If rating exists, use it; otherwise, default to 3
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching rating for article " + articleId + ": " + e.getMessage());
+        }
+
+        return rating;
     }
 
     public void handleRateArticle(Article article) {
@@ -171,6 +226,8 @@ public class ViewNews implements Initializable {
     }
 
     private void updateArticleRatingInDatabase(String articleId, int rating) {
+        if (rating == 0) return;  // Don't update the database if rating is -1 (i.e., no user rating).
+
         try {
             MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
             Bson filter = Filters.and(Filters.eq("articleId", articleId), Filters.eq("userId", User.getLoggedInUserId()));
@@ -192,9 +249,13 @@ public class ViewNews implements Initializable {
         }
     }
 
+
     private MongoCollection<Document> getMongoCollection(String collectionName) {
         try {
-            MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+            ServerApi serverApi = ServerApi.builder()
+                    .version(ServerApiVersion.V1)
+                    .build();
+            MongoClient mongoClient = MongoClients.create("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
             return database.getCollection(collectionName);
         } catch (Exception e) {
@@ -229,12 +290,7 @@ public class ViewNews implements Initializable {
         if (selectedArticle != null) {
             // Get the URL from the selected article
             String url = selectedArticle.getUrl();
-
-            // Open the URL in the default web browser
-            if (url != null) {
-                HostServices hostServices = HelloApplication.getHostServicesInstance();
-                hostServices.showDocument(url);
-            }
+            openUrlInBrowser(url);  // Open in browser
         }
     }
 }

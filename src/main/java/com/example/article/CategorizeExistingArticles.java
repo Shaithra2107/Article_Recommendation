@@ -3,6 +3,8 @@ package com.example.article;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -17,7 +19,7 @@ import java.util.concurrent.Executors; // Import the Executors class
 
 public class CategorizeExistingArticles {
 
-    private static final String CONNECTION_STRING = "mongodb://localhost:27017";  // Update if necessary
+    private static final String CONNECTION_STRING = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";  // Update if necessary
     private static final String DATABASE_NAME = "News_Recommendation";
     private static final String COLLECTION_NAME = "News";
 
@@ -31,6 +33,9 @@ public class CategorizeExistingArticles {
         ConnectionString connectionString = new ConnectionString(CONNECTION_STRING);
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
+                .build();
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
                 .build();
         mongoClient = MongoClients.create(settings);
         database = mongoClient.getDatabase(DATABASE_NAME);

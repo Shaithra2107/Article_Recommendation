@@ -2,6 +2,8 @@ package com.example.article;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -84,8 +86,11 @@ public class SignUp {
                 : genderField.getSelectedToggle() == femaleRadioButton ? "Female" : "Other";
 
         try {
+            ServerApi serverApi = ServerApi.builder()
+                    .version(ServerApiVersion.V1)
+                    .build();
             // Set up MongoDB connection
-            ConnectionString connectionString = new ConnectionString("mongodb://127.0.0.1:27017");
+            ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
             MongoClientSettings settings = MongoClientSettings.builder()
                     .applyConnectionString(connectionString)
                     .build();
