@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
 
+
 public class ViewRecommendedArticles implements Initializable {
 
     @FXML
@@ -46,9 +47,9 @@ public class ViewRecommendedArticles implements Initializable {
     @FXML
     public TableColumn<Article, String> urlColumn;
     @FXML
-    private TableColumn<Article, Integer> ratingsColumn;
-    @FXML
     private TableColumn<Article, Void> actionsColumn;
+    @FXML
+    private TableColumn<Article, Integer> ratingsColumn;
 
 
     private MongoCollection<Document> ratingsCollection;
@@ -205,8 +206,6 @@ public class ViewRecommendedArticles implements Initializable {
         return user;
     }
 
-
-
     private List<Article> getArticlesForNewUser() {
         System.out.println("Fetching articles for a new user...");
         return getRandomArticlesFromAllCategories();
@@ -222,9 +221,7 @@ public class ViewRecommendedArticles implements Initializable {
         System.out.println("Fetching articles for user's preferred categories: " + userId);
         Map<String, Integer> highRatedCounts = categorizeUserRatings(userId, true);
         return getArticlesFromPreferredCategories(highRatedCounts);
-    }
-
-    private List<Article> getRandomArticlesFromAllCategories() {
+    }    private List<Article> getRandomArticlesFromAllCategories() {
         List<Future<List<Article>>> futures = new ArrayList<>();
         List<Article> articles = Collections.synchronizedList(new ArrayList<>());
         String[] categories = {"Business_and_Economy", "Geopolitics_and_Regional_Focus", "Health_and_Pandemic", "Technology", "Sports_and_Competition", "Others"};
@@ -375,9 +372,7 @@ public class ViewRecommendedArticles implements Initializable {
         MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
         Document userRating = ratingsCollection.find(Filters.eq("userId", userId)).first();
         return userRating == null;  // If no ratings exist for the user, they are new
-    }
-
-    private Map<String, Integer> categorizeUserRatings(String userId, boolean highRated) {
+    } private Map<String, Integer> categorizeUserRatings(String userId, boolean highRated) {
         MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
         Map<String, Integer> categoryCounts = new HashMap<>();
 
@@ -528,4 +523,4 @@ public class ViewRecommendedArticles implements Initializable {
         }
     }
 
-}
+} 

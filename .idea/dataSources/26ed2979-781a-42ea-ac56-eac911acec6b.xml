@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="News_Recommend">
+  <database-model serializer="dbm" dbms="MONGO" family-id="MONGO" format-version="4.52">
+    <root id="1">
+      <ServerVersion>8.0.3</ServerVersion>
+    </root>
+    <schema id="2" parent="1" name="News_Recommendation">
+      <LastIntrospectionLocalTimestamp>2024-11-15.12:29:06</LastIntrospectionLocalTimestamp>
+    </schema>
+    <schema id="3" parent="1" name="admin"/>
+    <schema id="4" parent="1" name="config"/>
+    <schema id="5" parent="1" name="local"/>
+    <table id="6" parent="2" name="Users"/>
+    <column id="7" parent="6" name="_id">
+      <DasType>ObjectId|12s</DasType>
+      <Position>1</Position>
+    </column>
+    <column id="8" parent="6" name="dob">
+      <DasType>String|12s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="9" parent="6" name="email">
+      <DasType>String|12s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="10" parent="6" name="fullName">
+      <DasType>String|12s</DasType>
+      <Position>4</Position>
+    </column>
+    <column id="11" parent="6" name="gender">
+      <DasType>String|12s</DasType>
+      <Position>5</Position>
+    </column>
+    <column id="12" parent="6" name="password">
+      <DasType>String|12s</DasType>
+      <Position>6</Position>
+    </column>
+    <column id="13" parent="6" name="phoneNumber">
+      <DasType>String|12s</DasType>
+      <Position>7</Position>
+    </column>
+    <column id="14" parent="6" name="username">
+      <DasType>String|12s</DasType>
+      <Position>8</Position>
+    </column>
+  </database-model>
+</dataSource>

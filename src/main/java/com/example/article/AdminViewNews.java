@@ -1,12 +1,9 @@
 package com.example.article;
 
 import com.example.article.App.Article;
-import com.example.article.App.User;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
 import com.mongodb.client.*;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Updates;
 import javafx.application.HostServices;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,21 +14,23 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
-public class ViewNews implements Initializable {
-
+public class AdminViewNews implements Initializable {
     @FXML
     public Label categoryLabel;
     @FXML
@@ -46,15 +45,10 @@ public class ViewNews implements Initializable {
     public TableColumn<Article, String> descriptionColumn;
     @FXML
     public TableColumn<Article, String> urlColumn;
-    @FXML
-    private TableColumn<Article, Integer> ratingsColumn;  // Integer column for ratings
-    @FXML
-    private TableColumn<Article, Void> actionsColumn; // The column containing the "Rate" button
-
-    private MongoCollection<Document> newsCollection;
 
     // ExecutorService for managing threads
     private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -79,52 +73,7 @@ public class ViewNews implements Initializable {
                 }
             }
         });
-
-        actionsColumn.setCellFactory(param -> new TableCell<Article, Void>() {
-            private final Button btn = new Button("Rate");
-
-            {
-                btn.setOnAction(event -> {
-                    Article article = getTableView().getItems().get(getIndex());
-                    System.out.println("Rate button clicked for Article ID: " + article.getArticleId());
-                    handleRateArticle(article);
-                });
-            }
-
-            @Override
-            public void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
-            }
-        });
-
-        // Updated to handle Integer rating correctly
-        ratingsColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));  // Bind to Article rating
-        ratingsColumn.setCellFactory(col -> new TableCell<Article, Integer>() {
-            private final ComboBox<Integer> comboBox = new ComboBox<>(FXCollections.observableArrayList(1, 2, 3, 4, 5));
-
-            {
-                comboBox.setOnAction(event -> {
-                    Article article = getTableView().getItems().get(getIndex());
-                    int newRating = comboBox.getValue();
-                    article.setRating(newRating); // Update model
-                    updateArticleRatingInDatabase(article.getArticleId(), newRating); // Save to database
-                });
-            }
-
-            @Override
-            protected void updateItem(Integer item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    comboBox.setValue(item); // Set the ComboBox value to the current rating
-                    setGraphic(comboBox);
-                }
-            }
-        });
-
-        String category = DashboardController.getCategory();
+        String category = AdminDashboard.getCategory();
         if (category != null) {
             System.out.println("Category loaded: " + category);
             categoryLabel.setText(category);
@@ -133,7 +82,6 @@ public class ViewNews implements Initializable {
             System.out.println("Category is null!");
         }
     }
-
     private void loadArticlesConcurrently(String category) {
         ObservableList<Article> articles = FXCollections.observableArrayList();
         try {
@@ -174,79 +122,16 @@ public class ViewNews implements Initializable {
                 String url = doc.getString("link");
 
                 // Get the rating from the ratings collection for the current article and user
-                int rating = getRatingForArticle(articleId);
+
 
                 if (articleId != null && title != null && date != null) {
-                    articles.add(new Article(articleId, title, date, description, url, rating)); // Pass the rating to the Article constructor
+                    articles.add(new Article(articleId, title, date, description, url)); // Pass the rating to the Article constructor
                 }
             }
         } catch (Exception e) {
             System.err.println("Error fetching articles for category " + category + ": " + e.getMessage());
         }
         return articles;
-    }
-
-    // Method to fetch the rating for an article based on the logged-in user and articleId
-    private int getRatingForArticle(String articleId) {
-        int rating = 0;  // Default to 0, indicating no rating.
-
-        try {
-            MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
-            Bson filter = Filters.and(Filters.eq("articleId", articleId), Filters.eq("userId", User.getLoggedInUserId()));
-            Document userRatingDoc = ratingsCollection.find(filter).first();
-
-            if (userRatingDoc != null) {
-                rating = userRatingDoc.getInteger("rating", 0);  // If rating exists, use it; otherwise, default to 3
-            }
-        } catch (Exception e) {
-            System.err.println("Error fetching rating for article " + articleId + ": " + e.getMessage());
-        }
-
-        return rating;
-    }
-
-    public void handleRateArticle(Article article) {
-        System.out.println("Handling rating for Article: " + article);
-        int rating = showRatingDialog();
-        if (rating > 0) {
-            updateArticleRatingInDatabase(article.getArticleId(), rating);
-            article.setRating(rating);
-            newsTable.refresh();
-        }
-    }
-
-    private int showRatingDialog() {
-        ChoiceDialog<Integer> dialog = new ChoiceDialog<>(3, 1, 2, 3, 4, 5);
-        dialog.setTitle("Rate the Article");
-        dialog.setHeaderText("Please rate the article:");
-        dialog.setContentText("Choose a rating (1-5):");
-
-        Optional<Integer> result = dialog.showAndWait();
-        return result.orElse(-1); // Return -1 for no choice
-    }
-
-    private void updateArticleRatingInDatabase(String articleId, int rating) {
-        if (rating == 0) return;  // Don't update the database if rating is -1 (i.e., no user rating).
-
-        try {
-            MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
-            Bson filter = Filters.and(Filters.eq("articleId", articleId), Filters.eq("userId", User.getLoggedInUserId()));
-            Document existingRating = ratingsCollection.find(filter).first();
-
-            if (existingRating != null) {
-                System.out.println("Updating existing rating for Article ID: " + articleId);
-                ratingsCollection.updateOne(filter, Updates.set("rating", rating));
-            } else {
-                System.out.println("Inserting new rating for Article ID: " + articleId);
-                Document newRating = new Document("userId", User.getLoggedInUserId())
-                        .append("articleId", articleId)
-                        .append("rating", rating);
-                ratingsCollection.insertOne(newRating);
-            }
-        } catch (Exception e) {
-            System.err.println("Error updating/inserting rating: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
 
@@ -270,18 +155,7 @@ public class ViewNews implements Initializable {
     }
 
     // Handle the back button to return to the Admin Dashboard
-    public void handleBack(ActionEvent actionEvent) {
-        try {
-            Parent adminRoot = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
-            Scene adminScene = new Scene(adminRoot);
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            stage.setScene(adminScene);
-            stage.setTitle("Admin Dashboard");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @FXML
     private void handleUrlClick(MouseEvent event) {
@@ -294,5 +168,17 @@ public class ViewNews implements Initializable {
         }
     }
 
-
+    // Handle the back button to return to the Admin Dashboard
+    public void handleBackToAdmin(ActionEvent actionEvent) {
+        try {
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("AdminView.fxml"));
+            Scene adminScene = new Scene(adminRoot);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(adminScene);
+            stage.setTitle("Admin Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

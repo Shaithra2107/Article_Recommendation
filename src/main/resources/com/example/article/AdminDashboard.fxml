@@ -12,8 +12,9 @@
 
     <!-- Buttons Section -->
     <VBox alignment="CENTER" layoutX="38.0" layoutY="83.0" prefHeight="258.0" prefWidth="524.0" spacing="20">
-        <Button fx:id="btnAddArticle" onAction="#handleAddArticle" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-background-radius: 20;" text="Add Article" />
-        <Button fx:id="btnEditArticle" onAction="#handleEditArticle" prefHeight="42.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-background-radius: 20;" text="Edit Article" />
+        <Button fx:id="btnAddArticle" onAction="#handleViewArticle" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-background-radius: 20;" text="View News Article" />
+      <Button fx:id="btnAddArticle1" layoutX="172.0" layoutY="63.0" onAction="#handleAddArticle" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-background-radius: 20;" text="Add News Article" />
+        <Button fx:id="btnEditArticle" onAction="#handleEditArticle" prefHeight="42.0" prefWidth="200.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 14px; -fx-background-radius: 20;" text="Edit News Article" />
         <HBox alignment="CENTER" layoutX="127.0" layoutY="250.0" spacing="10">
             <TextField fx:id="txtArticleID" prefWidth="250.0" promptText="Enter Article ID" style="-fx-background-radius: 15; -fx-padding: 5px; -fx-border-color: #ffffff; -fx-border-radius: 15; -fx-text-fill: #0A4969;" />
             <Button fx:id="btnDeleteArticle" onAction="#handleDeleteArticle" prefWidth="100.0" style="-fx-background-color: #ffffff; -fx-text-fill: #0A4969; -fx-font-size: 12px; -fx-background-radius: 15;" text="Delete" />

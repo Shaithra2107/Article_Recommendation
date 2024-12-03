@@ -12,7 +12,11 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 import org.bson.Document;
 
@@ -140,6 +144,109 @@ public class AdminDashboard {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(signUpScene);
             stage.setTitle("Admin Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void handleViewArticle(ActionEvent actionEvent) {
+        try {
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("AdminView.fxml"));
+            Scene signUpScene = new Scene(signUpRoot);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(signUpScene);
+            stage.setTitle("Edit Article");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    //view articles code
+
+    @FXML
+    public Label welcomeLabel;
+    @FXML
+    public TilePane categoryPane;
+    @FXML
+    public ImageView businessIcon;
+    @FXML
+    public ImageView techIcon;
+    @FXML
+    public ImageView healthIcon;
+    @FXML
+    public ImageView geoIcon;
+    @FXML
+    public ImageView sportsIcon;
+    @FXML
+    public ImageView otherIcon;
+
+    private static String selectedCategory = "";
+
+
+
+    // Method to return the collection
+    public MongoCollection<Document> getCollection() {
+        return articleCollection;
+    }
+
+    // Method to return the database
+    public MongoDatabase getDatabase() {
+        return database;
+    }
+
+    // Method to get the selected category
+    public static String getCategory() {
+        return selectedCategory;
+    }
+
+    // Navigate to the ViewNews page for a specific category
+    private void navigateToViewNews(String category) {
+        selectedCategory = category;  // Set the selected category
+        try {
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("AdminViewNews.fxml"));
+            Scene adminScene = new Scene(adminRoot);
+            Stage stage = (Stage) categoryPane.getScene().getWindow();
+            stage.setScene(adminScene);
+            stage.setTitle(category);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void Business(ActionEvent actionEvent) {
+        navigateToViewNews("Business_and_Economy");
+    }
+
+    public void Technology(ActionEvent actionEvent) {
+        navigateToViewNews("Technology");
+    }
+
+    public void politics(ActionEvent actionEvent) {
+        navigateToViewNews("Geopolitics_and_Regional_Focus");
+    }
+
+    public void Health(ActionEvent actionEvent) {
+        navigateToViewNews("Health_and_Pandemic");
+    }
+
+    public void Sports(ActionEvent actionEvent) {
+        navigateToViewNews("Sports_and_Competition");
+    }
+
+    public void other(ActionEvent actionEvent) {
+        navigateToViewNews("Others");
+    }
+
+
+    public void handleBackTo(ActionEvent actionEvent) {
+        try {
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+            Scene signUpScene = new Scene(signUpRoot);
+            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            stage.setScene(signUpScene);
+            stage.setTitle("Edit Article");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
