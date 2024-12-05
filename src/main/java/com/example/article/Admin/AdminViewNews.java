@@ -1,6 +1,7 @@
-package com.example.article;
+package com.example.article.Admin;
 
 import com.example.article.App.Article;
+import com.example.article.HelloApplication;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
 import com.mongodb.client.*;
@@ -171,7 +172,7 @@ public class AdminViewNews implements Initializable {
     // Handle the back button to return to the Admin Dashboard
     public void handleBackToAdmin(ActionEvent actionEvent) {
         try {
-            Parent adminRoot = FXMLLoader.load(getClass().getResource("AdminView.fxml"));
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminView.fxml"));
             Scene adminScene = new Scene(adminRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(adminScene);

@@ -1,4 +1,4 @@
-package com.example.article;
+package com.example.article.Article;
 
 import java.util.List;
 

@@ -18,7 +18,7 @@ public class HelloApplication extends Application {
         hostServices = getHostServices();
 
         // Load the FXML file (WelcomePage.fxml in this case)
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("WelcomePage.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("/com/example/article/WelcomePage.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 630, 550);
 
         // Set up the stage (window)

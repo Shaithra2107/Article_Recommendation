@@ -1,5 +1,6 @@
-package com.example.article;
+package com.example.article.Admin;
 
+import com.example.article.DB.DatabaseHelper;
 import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -12,7 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
@@ -36,21 +36,12 @@ public class AdminDashboard {
         // Initialize MongoDB connection
         // MongoDB setup (similar to how it's done in ManageArticle class)
         // Initialize MongoDB connection
-        String connectionString = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
-        // Create a new client and connect to the server
-        MongoClient mongoClient = MongoClients.create(settings);
-
-
         // Access the database and Admin collection
-        MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
-        articleCollection = database.getCollection("News");  // Get the collection
+        // Instantiate DatabaseHelper with connection string
+        DatabaseHelper dbHelper = new DatabaseHelper("mongodb://localhost:27017");
+
+        // Fetch the "ratings" collection from the database
+        MongoCollection<Document> collection = dbHelper.getCollection("News");
 
 
     }
@@ -111,7 +102,7 @@ public class AdminDashboard {
     // Navigate to EditArticle.fxml for editing articles
     public void handleEditArticle(ActionEvent actionEvent) {
         try {
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("EditArticle.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/EditArticle.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(signUpScene);
@@ -125,7 +116,7 @@ public class AdminDashboard {
     // Navigate to AddArticle.fxml for adding new articles
     public void handleAddArticle(ActionEvent actionEvent) {
         try {
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("AddArticle.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AddArticle.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(signUpScene);
@@ -139,7 +130,7 @@ public class AdminDashboard {
     // Navigate back to AdminLogin.fxml
     public void handleBack(ActionEvent actionEvent) {
         try {
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("AdminLogin.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminLogin.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(signUpScene);
@@ -152,7 +143,7 @@ public class AdminDashboard {
 
     public void handleViewArticle(ActionEvent actionEvent) {
         try {
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("AdminView.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminView.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(signUpScene);
@@ -204,7 +195,7 @@ public class AdminDashboard {
     private void navigateToViewNews(String category) {
         selectedCategory = category;  // Set the selected category
         try {
-            Parent adminRoot = FXMLLoader.load(getClass().getResource("AdminViewNews.fxml"));
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminViewNews.fxml"));
             Scene adminScene = new Scene(adminRoot);
             Stage stage = (Stage) categoryPane.getScene().getWindow();
             stage.setScene(adminScene);
@@ -242,7 +233,7 @@ public class AdminDashboard {
 
     public void handleBackTo(ActionEvent actionEvent) {
         try {
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminDashboard.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(signUpScene);

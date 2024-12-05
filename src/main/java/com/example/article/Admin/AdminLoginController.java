@@ -1,4 +1,4 @@
-package com.example.article;
+package com.example.article.Admin;
 
 import com.mongodb.*;
 import com.mongodb.client.MongoClient;
@@ -36,7 +36,7 @@ public class AdminLoginController {
 
     public AdminLoginController() {
         // Initialize MongoDB connection
-        String connectionString = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+        String connectionString = "mongodb://localhost:27017";
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
                 .build();
@@ -93,7 +93,7 @@ public class AdminLoginController {
     private void handleBack(ActionEvent actionEvent) {
         try {
             // Load the Welcome Page FXML file
-            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("WelcomePage.fxml"));
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("/com/example/article/WelcomePage.fxml"));
             Scene welcomeScene = new Scene(welcomeRoot);
 
             // Get the current stage (window) and set the new scene
@@ -110,7 +110,7 @@ public class AdminLoginController {
     private void redirectToAdminDashboard(ActionEvent actionEvent) {
         try {
             // Load the Admin Dashboard FXML file
-            Parent adminDashboardRoot = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+            Parent adminDashboardRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminDashboard.fxml"));
             Scene adminDashboardScene = new Scene(adminDashboardRoot);
 
             // Get the current stage (window) and set the new scene

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="505.0" prefWidth="570.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.LoginController">
+<AnchorPane prefHeight="505.0" prefWidth="570.0" style="-fx-background-color: #0A4969;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.User.LoginController">
 
     <VBox alignment="CENTER" layoutX="35.0" layoutY="20.0" prefHeight="465.0" prefWidth="500.0" spacing="20" style="-fx-padding: 30; -fx-background-color: #ffffff; -fx-background-radius: 15;">
 

@@ -1,7 +1,8 @@
-package com.example.article;
+package com.example.article.User;
 
 import com.example.article.App.Article;
 import com.example.article.App.User;
+import com.example.article.HelloApplication;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
 import com.mongodb.client.*;
@@ -28,7 +29,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 public class ViewNews implements Initializable {
 
@@ -255,7 +255,7 @@ public class ViewNews implements Initializable {
             ServerApi serverApi = ServerApi.builder()
                     .version(ServerApiVersion.V1)
                     .build();
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+            MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
             MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
             return database.getCollection(collectionName);
         } catch (Exception e) {
@@ -272,7 +272,7 @@ public class ViewNews implements Initializable {
     // Handle the back button to return to the Admin Dashboard
     public void handleBack(ActionEvent actionEvent) {
         try {
-            Parent adminRoot = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("/com/example/article/DashBoard.fxml"));
             Scene adminScene = new Scene(adminRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(adminScene);

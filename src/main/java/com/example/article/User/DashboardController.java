@@ -1,6 +1,7 @@
-package com.example.article;
+package com.example.article.User;
 
 import com.example.article.App.User;
+import com.example.article.DB.DatabaseHelper;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
@@ -60,18 +61,15 @@ public class DashboardController {
 
     // Constructor to initialize MongoDB client and connection
     public DashboardController() {
-        ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
-                .build();
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        mongoClient = MongoClients.create(settings);  // Initialize MongoClient
+        //Initialize MongoDB connection
+        // MongoDB setup (similar to how it's done in ManageArticle class)
+        // Initialize MongoDB connection
+        // Access the database and News collection
+        // Instantiate DatabaseHelper with connection string
+        DatabaseHelper dbHelper = new DatabaseHelper("mongodb://localhost:27017");
 
-        // Access database and collection
-        database = mongoClient.getDatabase("News_Recommendation");  // Get the database
-        articleCollection = database.getCollection("News");  // Get the collection
+        // Fetch the "ratings" collection from the database
+        MongoCollection<Document> collection = dbHelper.getCollection("News");
     }
 
     // Method to return the collection
@@ -93,7 +91,7 @@ public class DashboardController {
     private void navigateToViewNews(String category) {
         selectedCategory = category;  // Set the selected category
         try {
-            Parent adminRoot = FXMLLoader.load(getClass().getResource("ViewNews.fxml"));
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("/com/example/article/ViewNews.fxml"));
             Scene adminScene = new Scene(adminRoot);
             Stage stage = (Stage) categoryPane.getScene().getWindow();
             stage.setScene(adminScene);
@@ -131,7 +129,7 @@ public class DashboardController {
     public void handleManageProfile(ActionEvent actionEvent) {
         try {
             // Load the Welcome Page FXML file
-            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("ManageProfile.fxml"));
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("/com/example/article/ManageProfile.fxml"));
             Scene welcomeScene = new Scene(welcomeRoot);
 
             // Get the current stage (window) and set the new scene
@@ -148,7 +146,7 @@ public class DashboardController {
     private void handleGetRecommendations(ActionEvent event) {
         try {
             // Load the Recommendations.fxml view
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Recommendations.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/article/Recommendations.fxml"));
             Parent root = loader.load();
 
             // Get the user ID of the logged-in user
@@ -192,7 +190,7 @@ public class DashboardController {
             User.setLoggedInUserId(null);
 
             // Redirect to the login page
-            Parent loginRoot = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Parent loginRoot = FXMLLoader.load(getClass().getResource("/com/example/article/Login.fxml"));
             Scene loginScene = new Scene(loginRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(loginScene);
@@ -214,7 +212,7 @@ public class DashboardController {
     public void handleBack(ActionEvent actionEvent) {
         try {
             // Load the Welcome Page FXML file
-            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("/com/example/article/Login.fxml"));
             Scene welcomeScene = new Scene(welcomeRoot);
 
             // Get the current stage (window) and set the new scene

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="20" style="-fx-padding: 30; -fx-background-color: linear-gradient(to bottom, #0A4969, #024059);" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.ManageArticle">
+<VBox alignment="CENTER" spacing="20" style="-fx-padding: 30; -fx-background-color: linear-gradient(to bottom, #0A4969, #024059);" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.Admin.ManageArticle">
 
     <!-- Title Label -->
     <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;" text="Edit Article" />

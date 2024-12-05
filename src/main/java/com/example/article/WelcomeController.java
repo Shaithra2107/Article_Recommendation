@@ -15,7 +15,7 @@ public class WelcomeController {
     public void handleAdmin(ActionEvent actionEvent) {
         try {
             // Load the SignUp FXML file
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("AdminLogin.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminLogin.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
 
             // Get the current stage (window) and set the new scene
@@ -31,7 +31,7 @@ public class WelcomeController {
     public void handleUser(ActionEvent actionEvent) {
         try {
             // Load the SignUp FXML file
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/Login.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
 
             // Get the current stage (window) and set the new scene

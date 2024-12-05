@@ -1,4 +1,4 @@
-package com.example.article;
+package com.example.article.User;
 
 import com.example.article.App.User;
 import com.mongodb.ConnectionString;
@@ -36,7 +36,7 @@ public class LoginController {
 
     public LoginController() {
         // Initialize MongoDB connection
-        ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
@@ -79,7 +79,7 @@ public class LoginController {
     private void handleSignUp(ActionEvent actionEvent) {
         try {
             // Load the Sign Up FXML file
-            Parent signUpRoot = FXMLLoader.load(getClass().getResource("SignUp.fxml"));
+            Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/SignUp.fxml"));
             Scene signUpScene = new Scene(signUpRoot);
 
             // Get the current stage (window) and set the new scene
@@ -97,7 +97,7 @@ public class LoginController {
     private void handleBack(ActionEvent actionEvent) {
         try {
             // Load the Welcome Page FXML file
-            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("WelcomePage.fxml"));
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("/com/example/article/WelcomePage.fxml"));
             Scene welcomeScene = new Scene(welcomeRoot);
 
             // Get the current stage (window) and set the new scene
@@ -114,7 +114,7 @@ public class LoginController {
     private void redirectToDashboard() {
         try {
             // Load the Dashboard FXML file
-            Parent dashboardRoot = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
+            Parent dashboardRoot = FXMLLoader.load(getClass().getResource("/com/example/article/DashBoard.fxml"));
             Scene dashboardScene = new Scene(dashboardRoot);
 
             // Get the current stage (window) and set the new scene

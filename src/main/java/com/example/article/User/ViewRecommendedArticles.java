@@ -1,7 +1,8 @@
-package com.example.article;
+package com.example.article.User;
 
 import com.example.article.App.Article;
 import com.example.article.App.User;
+import com.example.article.HelloApplication;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
 import com.mongodb.client.*;
@@ -310,7 +311,7 @@ public class ViewRecommendedArticles implements Initializable {
             ServerApi serverApi = ServerApi.builder()
                     .version(ServerApiVersion.V1)
                     .build();
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+            MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
             MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
             return database.getCollection(collectionName);
         } catch (Exception e) {
@@ -512,7 +513,7 @@ public class ViewRecommendedArticles implements Initializable {
     @FXML
     public void handleBack(ActionEvent actionEvent) {
         try {
-            Parent dashboardRoot = FXMLLoader.load(getClass().getResource("DashBoard.fxml"));
+            Parent dashboardRoot = FXMLLoader.load(getClass().getResource("/com/example/article/DashBoard.fxml"));
             Scene dashboardScene = new Scene(dashboardRoot);
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             stage.setScene(dashboardScene);

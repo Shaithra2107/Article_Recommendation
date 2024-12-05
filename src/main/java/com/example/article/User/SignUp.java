@@ -1,4 +1,4 @@
-package com.example.article;
+package com.example.article.User;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
@@ -90,7 +90,7 @@ public class SignUp {
                     .version(ServerApiVersion.V1)
                     .build();
             // Set up MongoDB connection
-            ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+            ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
             MongoClientSettings settings = MongoClientSettings.builder()
                     .applyConnectionString(connectionString)
                     .build();
@@ -139,7 +139,7 @@ public class SignUp {
     private void handleLogin(ActionEvent actionEvent) {
         try {
             // Load the Login FXML file
-            Parent loginRoot = FXMLLoader.load(getClass().getResource("Login.fxml"));
+            Parent loginRoot = FXMLLoader.load(getClass().getResource("/com/example/article/Login.fxml"));
             Scene loginScene = new Scene(loginRoot);
 
             // Get the current stage (window) and set the new scene
@@ -157,7 +157,7 @@ public class SignUp {
     private void handleBack(ActionEvent actionEvent) {
         try {
             // Load the Welcome Page FXML file
-            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("WelcomePage.fxml"));
+            Parent welcomeRoot = FXMLLoader.load(getClass().getResource("/com/example/article/WelcomePage.fxml"));
             Scene welcomeScene = new Scene(welcomeRoot);
 
             // Get the current stage (window) and set the new scene

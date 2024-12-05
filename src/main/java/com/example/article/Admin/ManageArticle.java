@@ -1,5 +1,6 @@
-package com.example.article;
+package com.example.article.Admin;
 
+import com.example.article.Article.ArticleCategorizer;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerApi;
@@ -23,7 +24,6 @@ import javafx.stage.Stage;
 import org.bson.Document;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 public class ManageArticle {
@@ -59,7 +59,7 @@ public class ManageArticle {
 
     public ManageArticle() {
         // Initialize MongoDB connection
-        ConnectionString connectionString = new ConnectionString("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(connectionString)
                 .build();
@@ -140,7 +140,7 @@ public class ManageArticle {
     public void handleBack(ActionEvent actionEvent) {
         try {
             // Load the Admin Dashboard FXML file
-            Parent adminRoot = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminDashboard.fxml"));
             Scene adminScene = new Scene(adminRoot);
 
             // Get the current stage (window) and set the new scene
@@ -256,7 +256,7 @@ public class ManageArticle {
     public void handleCancelEdit(ActionEvent actionEvent) {
         try {
             // Load the Admin Dashboard FXML file
-            Parent adminRoot = FXMLLoader.load(getClass().getResource("AdminDashboard.fxml"));
+            Parent adminRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminDashboard.fxml"));
             Scene adminScene = new Scene(adminRoot);
 
             // Get the current stage (window) and set the new scene

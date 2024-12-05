@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="383.0" prefWidth="600.0" style="-fx-background-color: linear-gradient(to bottom, #0A4969, #145C8B);" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.AdminDashboard">
+<AnchorPane prefHeight="383.0" prefWidth="600.0" style="-fx-background-color: linear-gradient(to bottom, #0A4969, #145C8B);" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.article.Admin.AdminDashboard">
     <!-- Title Section -->
     <VBox alignment="CENTER" layoutX="50.0" layoutY="20.0" prefWidth="500.0" spacing="20">
         <Label style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;" text="Admin Dashboard" />
