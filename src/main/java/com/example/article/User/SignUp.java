@@ -23,6 +23,8 @@ import org.bson.Document;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SignUp {
     @FXML
@@ -74,6 +76,12 @@ public class SignUp {
 
         if (!passwordField.getText().equals(confirmPasswordField.getText())) {
             showAlert("Passwords do not match.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // Email validation
+        if (!isValidEmail(emailField.getText())) {
+            showAlert("Please enter a valid email address.", Alert.AlertType.WARNING);
             return;
         }
 
@@ -134,6 +142,17 @@ public class SignUp {
             showAlert("Failed to save data to the database. Error: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
+    // Email validation method
+    private boolean isValidEmail(String email) {
+        // Define a regex pattern for validating email addresses
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
 
     @FXML
     private void handleLogin(ActionEvent actionEvent) {

@@ -58,19 +58,22 @@ public class ManageArticle {
     public Button btnCancel;
 
     public ManageArticle() {
-        // Initialize MongoDB connection
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
-                .build();
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        mongoClient = MongoClients.create(settings);  // Initialize MongoClient
+        try {
+            ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(connectionString)
+                    .build();
+            ServerApi serverApi = ServerApi.builder()
+                    .version(ServerApiVersion.V1)
+                    .build();
+            mongoClient = MongoClients.create(settings);
 
-        // Access database and collection
-        database = mongoClient.getDatabase("News_Recommendation");  // Get the database
-        articleCollection = database.getCollection("News");  // Get the collection
+            database = mongoClient.getDatabase("News_Recommendation");
+            articleCollection = database.getCollection("News");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Initialization Error", "Failed to initialize MongoDB connection: " + e.getMessage());
+        }
     }
 
     public void handleSave(ActionEvent actionEvent) {

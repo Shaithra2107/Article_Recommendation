@@ -13,25 +13,35 @@ public class DatabaseHelper {
     private static final String DATABASE_NAME = "News_Recommendation";
     private final MongoClient mongoClient;
 
+
+    //Making connection with the mongo db
     public DatabaseHelper(String connectionString) {
-        // MongoClientSettings setup
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
+        try {
+            // MongoClientSettings setup
+            ServerApi serverApi = ServerApi.builder()
+                    .version(ServerApiVersion.V1)
+                    .build();
 
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(connectionString))
+                    .serverApi(serverApi)
+                    .build();
 
-        // Create MongoClient with settings
-        mongoClient = MongoClients.create(settings);
+            // Create MongoClient with settings
+            mongoClient = MongoClients.create(settings);
+        } catch (Exception e) {
+            System.err.println("Error initializing MongoClient: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to initialize MongoClient.", e);
+        }
     }
 
+    //accessing the collection
     public MongoCollection<Document> getCollection(String collectionName) {
         return mongoClient.getDatabase(DATABASE_NAME).getCollection(collectionName);
     }
 
+    //closing the databse
     public void close() {
         mongoClient.close();
     }

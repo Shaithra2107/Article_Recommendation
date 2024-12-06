@@ -159,6 +159,7 @@ public class ViewRecommendedArticles implements Initializable {
     }
 
     // Method to fetch the rating for an article based on the logged-in user and articleId
+
     private int getRatingForArticle(String articleId) {
         int rating = 0;  // Default rating (or any other default you want)
 
@@ -177,6 +178,7 @@ public class ViewRecommendedArticles implements Initializable {
         return rating;
     }
 
+    //getting the user data from the database
     private User fetchUserData(String userId) {
         System.out.println("Starting to fetch user data for userId: " + userId);
         User user = new User(userId, "username_placeholder");
@@ -207,6 +209,7 @@ public class ViewRecommendedArticles implements Initializable {
         return user;
     }
 
+    //getting news for new users
     private List<Article> getArticlesForNewUser() {
         System.out.println("Fetching articles for a new user...");
         return getRandomArticlesFromAllCategories();
@@ -342,14 +345,32 @@ public class ViewRecommendedArticles implements Initializable {
         dialog.setContentText("Rating:");
 
         Optional<String> result = dialog.showAndWait();
-        return result.map(rating -> {
+
+        if (result.isPresent()) {
             try {
-                return Integer.parseInt(rating);
+                int rating = Integer.parseInt(result.get());
+                if (rating >= 1 && rating <= 5) {
+                    return rating;
+                } else {
+                    showAlert("Invalid Rating", Alert.AlertType.WARNING, "Please enter a rating between 1 and 5.");
+                }
             } catch (NumberFormatException e) {
-                return -1;
+                showAlert("Invalid Input", Alert.AlertType.ERROR, "Please enter a valid integer.");
             }
-        }).orElse(-1);
+        }
+        return 0; // Return 0 if input is invalid or canceled
     }
+
+    // Utility method to display alerts
+    private void showAlert(String title, Alert.AlertType alertType, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null); // No header text
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
 
     private void showInvalidRatingAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -510,6 +531,7 @@ public class ViewRecommendedArticles implements Initializable {
     }
 
 
+    //getting back to dashboard
     @FXML
     public void handleBack(ActionEvent actionEvent) {
         try {

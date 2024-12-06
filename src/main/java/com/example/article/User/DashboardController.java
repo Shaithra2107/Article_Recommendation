@@ -66,10 +66,14 @@ public class DashboardController {
         // Initialize MongoDB connection
         // Access the database and News collection
         // Instantiate DatabaseHelper with connection string
-        DatabaseHelper dbHelper = new DatabaseHelper("mongodb://localhost:27017");
+        try{DatabaseHelper dbHelper = new DatabaseHelper("mongodb://localhost:27017");
 
         // Fetch the "ratings" collection from the database
-        MongoCollection<Document> collection = dbHelper.getCollection("News");
+        MongoCollection<Document> collection = dbHelper.getCollection("News");}
+        catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error initializing database connection: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     // Method to return the collection

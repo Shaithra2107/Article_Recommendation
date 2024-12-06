@@ -30,19 +30,25 @@ public class CategorizeExistingArticles {
 
     // Constructor to initialize MongoDB client and connection
     public CategorizeExistingArticles() {
-        ConnectionString connectionString = new ConnectionString(CONNECTION_STRING);
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(connectionString)
-                .build();
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        mongoClient = MongoClients.create(settings);
-        database = mongoClient.getDatabase(DATABASE_NAME);
-        articleCollection = database.getCollection(COLLECTION_NAME);
+        try {
+            ConnectionString connectionString = new ConnectionString(CONNECTION_STRING);
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(connectionString)
+                    .build();
+            ServerApi serverApi = ServerApi.builder()
+                    .version(ServerApiVersion.V1)
+                    .build();
+            mongoClient = MongoClients.create(settings);
+            database = mongoClient.getDatabase(DATABASE_NAME);
+            articleCollection = database.getCollection(COLLECTION_NAME);
 
-        // Initialize the ExecutorService with a fixed thread pool size
-        executorService = Executors.newFixedThreadPool(4); // You can adjust the pool size
+            // Initialize the ExecutorService with a fixed thread pool size
+            executorService = Executors.newFixedThreadPool(4); // You can adjust the pool size
+        } catch (Exception e) {
+            System.err.println("Error initializing MongoDB client or ExecutorService: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to initialize resources.", e);
+        }
     }
 
     public void categorizeAndMoveArticles() {

@@ -153,7 +153,10 @@ public class AdminDashboard {
             e.printStackTrace();
         }
     }
-    //view articles code
+
+
+
+    //Admin view articles code
 
     @FXML
     public Label welcomeLabel;
@@ -231,6 +234,7 @@ public class AdminDashboard {
     }
 
 
+    //to get back to the dashboard
     public void handleBackTo(ActionEvent actionEvent) {
         try {
             Parent signUpRoot = FXMLLoader.load(getClass().getResource("/com/example/article/AdminDashboard.fxml"));

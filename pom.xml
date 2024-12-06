@@ -41,10 +41,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- MySQL Connector -->
-
-
-        <!-- MongoDB Driver -->
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>

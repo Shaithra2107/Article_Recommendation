@@ -31,7 +31,10 @@ import java.util.Objects;
 
 public class ManageProfileController {
 
+
     // FXML elements linked to the UI
+    @FXML
+    public TextField newPasswordField;
     @FXML
     private TextField fullNameField;
     @FXML
@@ -60,24 +63,26 @@ public class ManageProfileController {
 
     @FXML
     public void initialize() {
-        // Get the ID of the logged-in user from the User class
-        userId = new ObjectId(User.getLoggedInUserId());
+        try {
+            userId = new ObjectId(User.getLoggedInUserId());
 
-        // Set up MongoDB connection with connection string and settings
-        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
-        MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(connectionString).build();
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        mongoClient = MongoClients.create(settings);
+            ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+            MongoClientSettings settings = MongoClientSettings.builder().applyConnectionString(connectionString).build();
+            ServerApi serverApi = ServerApi.builder()
+                    .version(ServerApiVersion.V1)
+                    .build();
+            mongoClient = MongoClients.create(settings);
 
-        // Access the "News_Recommendation" database and "Users" collection
-        database = mongoClient.getDatabase("News_Recommendation");
-        userCollection = database.getCollection("Users");
+            database = mongoClient.getDatabase("News_Recommendation");
+            userCollection = database.getCollection("Users");
 
-        // Load the profile details of the user from the database
-        loadUserProfile();
+            loadUserProfile();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error initializing user profile: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
+
 
     // Method to load user profile data from MongoDB
     private void loadUserProfile() {
@@ -90,6 +95,7 @@ public class ManageProfileController {
             emailField.setText(userDoc.getString("email"));
             phoneField.setText(userDoc.getString("phoneNumber"));
             dobField.setValue(java.time.LocalDate.parse(userDoc.getString("dateOfBirth")));
+            newPasswordField.setText(userDoc.getString("password"));
 
             // Set the appropriate radio button for the user's gender
             String gender = userDoc.getString("gender");
@@ -123,6 +129,7 @@ public class ManageProfileController {
         String gender = maleRadioButton.isSelected() ? "Male" :
                 femaleRadioButton.isSelected() ? "Female" : "Other";
         String dob = dobField.getValue() != null ? dobField.getValue().toString() : "";
+        String newPassword = newPasswordField.getText();
 
         // Validate input fields
         if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || gender.isEmpty() || dob.isEmpty()) {
@@ -135,7 +142,8 @@ public class ManageProfileController {
                 .append("email", email)
                 .append("phoneNumber", phone)
                 .append("gender", gender)
-                .append("dateOfBirth", dob);
+                .append("dateOfBirth", dob)
+                .append("password", newPassword);
 
         // Include the profile picture path if a new file is selected
         if (profilePictureFile != null) {
@@ -192,8 +200,5 @@ public class ManageProfileController {
         alert.show();
     }
 
-    // Event handler for canceling changes (currently empty, can be implemented as needed)
-    public void handleCancel(ActionEvent actionEvent) {
 
-    }
 }

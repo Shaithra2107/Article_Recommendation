@@ -140,7 +140,10 @@ public class ViewNews implements Initializable {
             List<Callable<List<Article>>> tasks = new ArrayList<>();
 
             // Split tasks per category (or other logic if necessary)
-            tasks.add(() -> fetchArticlesByCategory(category));
+            tasks.add(() -> {
+                System.out.println("Thread [" + Thread.currentThread().getName() + "] is fetching articles for category: " + category);
+                return fetchArticlesByCategory(category);
+            });
 
             // Execute tasks concurrently
             List<Future<List<Article>>> results = executorService.invokeAll(tasks);
@@ -148,10 +151,12 @@ public class ViewNews implements Initializable {
             // Collect results from all threads
             for (Future<List<Article>> future : results) {
                 articles.addAll(future.get());
+                System.out.println("Thread [" + Thread.currentThread().getName() + "] has completed fetching articles.");
             }
 
             // Update TableView with the loaded articles
             newsTable.setItems(articles);
+            System.out.println("All threads completed. Articles loaded successfully into TableView.");
 
         } catch (InterruptedException | ExecutionException e) {
             System.err.println("Error loading articles concurrently: " + e.getMessage());
@@ -178,6 +183,7 @@ public class ViewNews implements Initializable {
 
                 if (articleId != null && title != null && date != null) {
                     articles.add(new Article(articleId, title, date, description, url, rating)); // Pass the rating to the Article constructor
+                    System.out.println("Thread [" + Thread.currentThread().getName() + "] fetched article: " + title + " (ID: " + articleId + ")");
                 }
             }
         } catch (Exception e) {
@@ -293,6 +299,15 @@ public class ViewNews implements Initializable {
             openUrlInBrowser(url);  // Open in browser
         }
     }
+    // ExecutorService for managing threads
+
+
+    {
+        System.out.println("ExecutorService initialized with " + Runtime.getRuntime().availableProcessors() + " threads.");
+    }
+
+
+
 
 
 }

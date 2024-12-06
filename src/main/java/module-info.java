@@ -6,6 +6,8 @@ module com.example.article {
     requires org.mongodb.driver.core;
     requires java.xml;
     requires java.desktop;
+    requires org.slf4j;
+    requires ch.qos.logback.classic;
 
 
     opens com.example.article to javafx.fxml;

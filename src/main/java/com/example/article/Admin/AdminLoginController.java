@@ -32,25 +32,29 @@ public class AdminLoginController {
     @FXML
     private Label adminMessageLabel;
 
-    private final MongoCollection<Document> adminCollection;
+    private MongoCollection<Document> adminCollection;
 
     public AdminLoginController() {
-        // Initialize MongoDB connection
-        String connectionString = "mongodb://localhost:27017";
-        ServerApi serverApi = ServerApi.builder()
-                .version(ServerApiVersion.V1)
-                .build();
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString(connectionString))
-                .serverApi(serverApi)
-                .build();
-        // Create a new client and connect to the server
-        MongoClient mongoClient = MongoClients.create(settings);
+        try {
+            // Initialize MongoDB connection
+            String connectionString = "mongodb://localhost:27017";
+            ServerApi serverApi = ServerApi.builder()
+                    .version(ServerApiVersion.V1)
+                    .build();
+            MongoClientSettings settings = MongoClientSettings.builder()
+                    .applyConnectionString(new ConnectionString(connectionString))
+                    .serverApi(serverApi)
+                    .build();
+            // Create a new client and connect to the server
+            MongoClient mongoClient = MongoClients.create(settings);
 
-
-        // Access the database and Admin collection
-        MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
-        adminCollection = database.getCollection("Admin");
+            // Access the database and Admin collection
+            MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
+            adminCollection = database.getCollection("Admin");
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error initializing MongoDB connection: " + e.getMessage());
+        }
     }
 
     @FXML
