@@ -101,6 +101,15 @@ CM_2601/
    - Admin can monitor and manage the system.  
 
 ---
+## **Assumptions**
+
+1. **Recommendation for returning users**  
+   - Gets the average of the past history ratings.  
+   - Recommends which category has more prference (<or =3 are preferred category below 3 are unpreferred ones).  
+
+ 
+
+---
 
 
 ## **Future Enhancements**
