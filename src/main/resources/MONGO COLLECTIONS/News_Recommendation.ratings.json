@@ -1,0 +1,72 @@
+[{
+  "_id": {
+    "$oid": "674b142b9513ec3955e2901e"
+  },
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "articleId": "15",
+  "rating": 4
+},
+{
+  "_id": {
+    "$oid": "674bea5035870250e931cd08"
+  },
+  "articleId": "45",
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "rating": 4
+},
+{
+  "_id": {
+    "$oid": "674bec701fd0ad69c078a57f"
+  },
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "articleId": "255",
+  "rating": 2
+},
+{
+  "_id": {
+    "$oid": "674dd7482aabd257f414485a"
+  },
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "articleId": "243",
+  "rating": 4
+},
+{
+  "_id": {
+    "$oid": "674e05fd35870250e931ce13"
+  },
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "articleId": "54",
+  "rating": 5
+},
+{
+  "_id": {
+    "$oid": "674ed387b2764672ca49c5e4"
+  },
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "articleId": "57",
+  "rating": 4
+},
+{
+  "_id": {
+    "$oid": "67503f2fb28065608dfa4a2f"
+  },
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "articleId": "157",
+  "rating": 4
+},
+{
+  "_id": {
+    "$oid": "67505fc467d3184b6ea0012e"
+  },
+  "userId": "6747567971877f7d0051c39b",
+  "articleId": "54",
+  "rating": 4
+},
+{
+  "_id": {
+    "$oid": "6751319655ee0a5fb3ca0fd9"
+  },
+  "userId": "6746b6f2ead37d6d18c906ae",
+  "articleId": "22",
+  "rating": 4
+}]

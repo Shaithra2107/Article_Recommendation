@@ -1,0 +1,26 @@
+[{
+  "_id": {
+    "$oid": "6746b6f2ead37d6d18c906ae"
+  },
+  "fullName": "Shaithra",
+  "email": "shaithra123@gmail.com",
+  "username": "shaithra",
+  "password": "shaithra123",
+  "dateOfBirth": "2003-11-21",
+  "gender": "Female",
+  "phoneNumber": "0773503398",
+  "profilePicturePath": "C:\\Users\\shait\\OneDrive\\Pictures\\ddd.jpg"
+},
+{
+  "_id": {
+    "$oid": "67486f4ef8ecc82fb5cabc8a"
+  },
+  "fullName": "sumathiny",
+  "email": "suma@gmail.com",
+  "username": "suma",
+  "password": "suma1",
+  "dateOfBirth": "1989-11-22",
+  "gender": "Female",
+  "phoneNumber": "0775674532",
+  "profilePicturePath": "C:\\Users\\shait\\OneDrive\\Pictures\\New folder (2)\\Cakes-Desserts1-150x150.jpg"
+}]
