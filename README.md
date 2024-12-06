@@ -67,7 +67,8 @@ CM_2601/
 
 ### **Requirements**
 - Java JDK 11 or higher  
-- MongoDB installed and running on `localhost:27017`  
+- MongoDB installed and running on `localhost:27017`
+- Cluster to run in any device  `mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 - Maven  
 
 ### **Steps to Run**
