@@ -29,7 +29,7 @@ import java.io.IOException;
 public class DashboardController {
 
     // MongoDB setup
-    private static final String CONNECTION_STRING = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // Update this if necessary
+    private static final String CONNECTION_STRING = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
     private static final String DATABASE_NAME = "News_Recommendation";
     private static final String COLLECTION_NAME = "News";
     @FXML

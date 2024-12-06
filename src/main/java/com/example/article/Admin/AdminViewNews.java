@@ -141,7 +141,7 @@ public class AdminViewNews implements Initializable {
             ServerApi serverApi = ServerApi.builder()
                     .version(ServerApiVersion.V1)
                     .build();
-            MongoClient mongoClient = MongoClients.create("mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+            MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
             MongoDatabase database = mongoClient.getDatabase("News_Recommendation");
             return database.getCollection(collectionName);
         } catch (Exception e) {

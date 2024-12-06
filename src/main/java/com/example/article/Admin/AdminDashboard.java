@@ -36,15 +36,25 @@ public class AdminDashboard {
         // Initialize MongoDB connection
         // MongoDB setup (similar to how it's done in ManageArticle class)
         // Initialize MongoDB connection
-        // Access the database and Admin collection
-        // Instantiate DatabaseHelper with connection string
-        DatabaseHelper dbHelper = new DatabaseHelper("mongodb://localhost:27017");
+        String connectionString = "mongodb://localhost:27017";
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
+                .build();
 
-        // Fetch the "ratings" collection from the database
-        MongoCollection<Document> collection = dbHelper.getCollection("News");
+        // Assign MongoClient and database to instance variables
+        this.mongoClient = MongoClients.create(settings);
+        this.database = this.mongoClient.getDatabase("News_Recommendation");
+
+        // Access the News collection
+        this.articleCollection = this.database.getCollection("News");
 
 
     }
+
 
     // Method to handle article deletion
     public void handleDeleteArticle(ActionEvent actionEvent) {
