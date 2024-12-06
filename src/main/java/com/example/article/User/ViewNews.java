@@ -134,6 +134,7 @@ public class ViewNews implements Initializable {
         }
     }
 
+    //load article in the table
     private void loadArticlesConcurrently(String category) {
         ObservableList<Article> articles = FXCollections.observableArrayList();
         try {
@@ -231,6 +232,7 @@ public class ViewNews implements Initializable {
         return result.orElse(-1); // Return -1 for no choice
     }
 
+    //update the ratings in ratings collection if user change the ratings
     private void updateArticleRatingInDatabase(String articleId, int rating) {
         if (rating == 0) return;  // Don't update the database if rating is -1 (i.e., no user rating).
 
@@ -256,6 +258,7 @@ public class ViewNews implements Initializable {
     }
 
 
+    //getting the connection to the db
     private MongoCollection<Document> getMongoCollection(String collectionName) {
         try {
             ServerApi serverApi = ServerApi.builder()
@@ -270,6 +273,7 @@ public class ViewNews implements Initializable {
         }
     }
 
+    //open article to read in browser
     private void openUrlInBrowser(String url) {
         HostServices hostServices = HelloApplication.getHostServicesInstance();
         hostServices.showDocument(url);

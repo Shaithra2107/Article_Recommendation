@@ -29,7 +29,7 @@ import java.io.IOException;
 public class DashboardController {
 
     // MongoDB setup
-    private static final String CONNECTION_STRING = "mongodb+srv://shaithra20232694:123shaithra@cluster0.cwjpj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+    private static final String CONNECTION_STRING = "mongodb://localhost:27017";
     private static final String DATABASE_NAME = "News_Recommendation";
     private static final String COLLECTION_NAME = "News";
     @FXML
@@ -61,20 +61,20 @@ public class DashboardController {
 
     // Constructor to initialize MongoDB client and connection
     public DashboardController() {
-        //Initialize MongoDB connection
-        // MongoDB setup (similar to how it's done in ManageArticle class)
-        // Initialize MongoDB connection
-        // Access the database and News collection
-        // Instantiate DatabaseHelper with connection string
-        try{DatabaseHelper dbHelper = new DatabaseHelper("mongodb://localhost:27017");
+        ConnectionString connectionString = new ConnectionString("mongodb://localhost:27017");
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .build();
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+        mongoClient = MongoClients.create(settings);  // Initialize MongoClient
 
-        // Fetch the "ratings" collection from the database
-        MongoCollection<Document> collection = dbHelper.getCollection("News");}
-        catch (Exception e) {
-            e.printStackTrace();
-            showAlert("Error initializing database connection: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
+        // Access database and collection
+        database = mongoClient.getDatabase("News_Recommendation");  // Get the database
+        articleCollection = database.getCollection("News");  // Get the collection
     }
+
 
     // Method to return the collection
     public MongoCollection<Document> getCollection() {

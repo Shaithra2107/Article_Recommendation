@@ -215,12 +215,14 @@ public class ViewRecommendedArticles implements Initializable {
         return getRandomArticlesFromAllCategories();
     }
 
+    //method to getArticlesForLowRatedCategories
     private List<Article> getArticlesForLowRatedCategories(String userId) {
         System.out.println("Fetching articles excluding low-rated categories for user: " + userId);
         Map<String, Integer> lowRatedCounts = categorizeUserRatings(userId, false);
         return getArticlesFromCategoriesExcluding(lowRatedCounts.keySet());
     }
 
+    //method to getArticlesForPreferredCategories
     private List<Article> getArticlesForPreferredCategories(String userId) {
         System.out.println("Fetching articles for user's preferred categories: " + userId);
         Map<String, Integer> highRatedCounts = categorizeUserRatings(userId, true);
@@ -230,6 +232,7 @@ public class ViewRecommendedArticles implements Initializable {
         List<Article> articles = Collections.synchronizedList(new ArrayList<>());
         String[] categories = {"Business_and_Economy", "Geopolitics_and_Regional_Focus", "Health_and_Pandemic", "Technology", "Sports_and_Competition", "Others"};
 
+        //executor service
         for (String category : categories) {
             Future<List<Article>> future = executorService.submit(() -> {
                 List<Article> categoryArticles = new ArrayList<>();
@@ -243,6 +246,7 @@ public class ViewRecommendedArticles implements Initializable {
             });
             futures.add(future);
         }
+
 
         for (Future<List<Article>> future : futures) {
             try {
@@ -309,6 +313,7 @@ public class ViewRecommendedArticles implements Initializable {
         return null;
     }
 
+    //get mongo collection connection
     private MongoCollection<Document> getMongoCollection(String collectionName) {
         try {
             ServerApi serverApi = ServerApi.builder()
@@ -323,10 +328,12 @@ public class ViewRecommendedArticles implements Initializable {
         }
     }
 
+    //to get the article in the url
     private void openUrlInBrowser(String url) {
         HelloApplication.getHostServicesInstance().showDocument(url);
     }
 
+    //handling the user ratings
     public void handleRateArticle(Article article) {
         int rating = showRatingDialog();
         if (rating > 0 && rating <= 5) {
@@ -338,6 +345,7 @@ public class ViewRecommendedArticles implements Initializable {
         }
     }
 
+    //Dialog box command for rating
     private int showRatingDialog() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Rate Article");
@@ -372,6 +380,7 @@ public class ViewRecommendedArticles implements Initializable {
 
 
 
+    //method for invalid data prompt
     private void showInvalidRatingAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid Rating");
@@ -379,6 +388,7 @@ public class ViewRecommendedArticles implements Initializable {
         alert.showAndWait();
     }
 
+    //changing ratings in the database ratings collection
     private void updateArticleRatingInDatabase(String articleId, int rating) {
         if (rating == 0) return;  // Don't update the database if rating is 0 (i.e., no user rating)
         MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
@@ -390,6 +400,7 @@ public class ViewRecommendedArticles implements Initializable {
         ratingsCollection.updateOne(filter, update, new UpdateOptions().upsert(true));
     }
 
+    //code for new users
     private boolean isNewUser(String userId) {
         MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
         Document userRating = ratingsCollection.find(Filters.eq("userId", userId)).first();
@@ -416,6 +427,7 @@ public class ViewRecommendedArticles implements Initializable {
         return categoryCounts;
     }
 
+    //method to calculate scores for user recommendation
     private Map<String, Double> calculateCategoryScores(String userId) {
         MongoCollection<Document> ratingsCollection = getMongoCollection("ratings");
         Map<String, List<Integer>> categoryRatings = new HashMap<>();
@@ -445,6 +457,7 @@ public class ViewRecommendedArticles implements Initializable {
         return categoryScores;
     }
 
+    //method to calculate the ratings
     private List<Article> recommendArticlesBasedOnCategoryScores(Map<String, Double> categoryScores) {
         List<Article> recommendedArticles = new ArrayList<>();
 
@@ -487,6 +500,7 @@ public class ViewRecommendedArticles implements Initializable {
     }
 
 
+    //getting the recommended articles in the table view
     public void loadRecommendedArticlesConcurrently() {
         String userId = User.getLoggedInUserId();
 

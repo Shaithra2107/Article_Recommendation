@@ -155,6 +155,7 @@ public class SignUp {
 
 
     @FXML
+    //handle login uf user
     private void handleLogin(ActionEvent actionEvent) {
         try {
             // Load the Login FXML file
